@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 const steps = [
   {
-    label: 'Welcome! What's your main goal?',
+    label: 'Welcome! What\'s your main goal?',
     options: ['Boost Mood', 'Build Habits', 'Track Streaks', 'Journaling', 'Stress Relief']
   },
   {
@@ -34,10 +34,10 @@ export default function Onboarding() {
       <img src="/logo.png" alt="PMA Logo" style={{ width: 88, marginBottom: 18 }} />
       <h2>Get Started with PMAction!</h2>
       <div style={{ marginBottom: 32, minHeight: 90 }}>
-        <strong>{steps[step].label}</strong>
-        <ul>
+        <h3>{steps[step].label}</h3>
+        <ul style={{ listStyle: 'none', padding: 0 }}>
           {steps[step].options.map(opt => (
-            <li key={opt} style={{ margin: '12px 0' }}>
+            <li key={opt} style={{ margin: '0.5rem 0' }}>
               <button
                 style={{ fontSize: '1rem', padding: '8px 24px', borderRadius: 6, background: '#6c5dd3', color: '#fff', border: 'none' }}
                 onClick={() => advance(opt)}
@@ -49,15 +49,15 @@ export default function Onboarding() {
         </ul>
       </div>
       {step === steps.length - 1 && selections.length === steps.length && (
-        <div style={{ marginTop: 40 }}>
-          <h3>Great! Ready to personalize your experience.</h3>
+        <div style={{ marginTop: 24 }}>
+          <p>Great! Ready to personalize your experience.</p>
           <Link href="/dashboard">
-            <button style={{ padding: '12px 32px', fontSize: '1rem', borderRadius: 8, background: '#0be881', color: '#2a2a2a', border: 'none' }}>
+            <button style={{ fontSize: '1rem', padding: '8px 24px', borderRadius: 6, background: '#6c5dd3', color: '#fff', border: 'none' }}>
               Go to Dashboard
             </button>
           </Link>
-          <div style={{ marginTop: 24 }}>
-            <small>Your setup: <br />{selections.join(', ')}</small>
+          <div style={{ marginTop: 16 }}>
+            <small>Your setup: {selections.join(', ')}</small>
           </div>
         </div>
       )}
