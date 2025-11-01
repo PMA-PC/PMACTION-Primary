@@ -1,15 +1,12 @@
 import { useState } from 'react';
-
 export default function Journal() {
   const [entry, setEntry] = useState('');
-  const [entries, setEntries] = useState<string[]>([]);
-
+  const [entries, setEntries] = useState<{date: string; text: string}[]>([]);
   const addEntry = () => {
     if (!entry.trim()) return;
     setEntries([{date: new Date().toLocaleString(), text: entry}, ...entries]);
     setEntry('');
   };
-
   return (
     <main style={{ maxWidth: 480, margin: '0 auto', padding: '2rem' }}>
       <h2>Journal</h2>
