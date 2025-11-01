@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
+import '../styles/style.css';
 
 const steps = [
   {
@@ -30,16 +31,26 @@ export default function Onboarding() {
   };
 
   return (
-    <main style={{ maxWidth: 500, margin: '0 auto', padding: '2rem' }}>
+    <main className="onboarding-container" style={{ maxWidth: 700, margin: '0 auto', padding: '2rem' }}>
       <img src="/logo.png" alt="PMA Logo" style={{ width: 88, marginBottom: 18 }} />
-      <h2>Get Started with PMAction!</h2>
+      <h2 className="page-title">Get Started with PMAction!</h2>
+      
+      {/* Progress Indicator for Onboarding Steps */}
+      <div className="progress-bar-container" style={{ marginBottom: 30 }}>
+        <div className="progress-bar gradient-bg" style={{ width: `${((step + 1) / steps.length) * 100}%` }}></div>
+        <div style={{ textAlign: 'center', marginTop: 8, fontSize: '0.9rem', color: '#666' }}>
+          Step {step + 1} of {steps.length}
+        </div>
+      </div>
+      
       <div style={{ marginBottom: 32, minHeight: 90 }}>
         <h3>{steps[step].label}</h3>
-        <ul style={{ listStyle: 'none', padding: 0 }}>
+        <ul className="option-list" style={{ listStyle: 'none', padding: 0 }}>
           {steps[step].options.map(opt => (
-            <li key={opt} style={{ margin: '0.5rem 0' }}>
+            <li key={opt} className="option-item" style={{ margin: '0.5rem 0' }}>
               <button
-                style={{ fontSize: '1rem', padding: '8px 24px', borderRadius: 6, background: '#6c5dd3', color: '#fff', border: 'none' }}
+                className="btn btn-option gradient-bg"
+                style={{ fontSize: '1rem', padding: '8px 24px', borderRadius: 6, background: '#6c5dd3', color: '#fff', border: 'none', cursor: 'pointer', width: '100%' }}
                 onClick={() => advance(opt)}
               >
                 {opt}
@@ -48,15 +59,16 @@ export default function Onboarding() {
           ))}
         </ul>
       </div>
+      
       {step === steps.length - 1 && selections.length === steps.length && (
-        <div style={{ marginTop: 24 }}>
+        <div className="completion-section" style={{ marginTop: 24 }}>
           <p>Great! Ready to personalize your experience.</p>
           <Link href="/dashboard">
-            <button style={{ fontSize: '1rem', padding: '8px 24px', borderRadius: 6, background: '#6c5dd3', color: '#fff', border: 'none' }}>
+            <button className="btn btn-primary gradient-bg" style={{ fontSize: '1rem', padding: '8px 24px', borderRadius: 6, background: '#6c5dd3', color: '#fff', border: 'none', cursor: 'pointer' }}>
               Go to Dashboard
             </button>
           </Link>
-          <div style={{ marginTop: 16 }}>
+          <div className="selection-summary" style={{ marginTop: 16 }}>
             <small>Your setup: {selections.join(', ')}</small>
           </div>
         </div>
