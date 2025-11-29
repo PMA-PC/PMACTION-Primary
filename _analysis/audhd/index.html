@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30-Day Relationship Recovery Program - AuDHD &amp; LGBTQ+ Focused</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation Bar -->
+        <nav id="navbar" class="navbar" style="display: none;">
+            <div class="nav-container">
+                <div class="nav-brand">Relationship Recovery - AuDHD Focus</div>
+                <div class="nav-links">
+                    <button class="nav-btn" onclick="showDashboard()">Dashboard</button>
+                    <button class="nav-btn" onclick="showProgress()">Progress</button>
+                    <button class="nav-btn" onclick="showMyPatterns()">My Patterns</button>
+                    <button class="nav-btn" onclick="showBadges()">Badges</button>
+                </div>
+                <div class="nav-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Level:</span>
+                        <span id="nav-level" class="stat-value">Awakening</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Points:</span>
+                        <span id="nav-points" class="stat-value">0</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Settings Button -->
+        <button id="settingsBtn" class="settings-btn" onclick="toggleSettings()">⚙️ Settings</button>
+
+        <!-- Settings Panel -->
+        <div id="settingsPanel" class="settings-panel">
+            <div class="settings-content">
+                <div class="settings-header">
+                    <h2>Customize Your Experience</h2>
+                    <button class="close-btn" onclick="toggleSettings()">✕</button>
+                </div>
+                
+                <div class="settings-section">
+                    <h3>Color Theme</h3>
+                    <div class="palette-selector" id="paletteSelector"></div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3>Text Size</h3>
+                    <p class="settings-note">Larger text improves readability</p>
+                    <div class="font-size-selector" id="fontSizeSelector"></div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3>Study Groups</h3>
+                    <p class="settings-note">Join optional study groups for community support</p>
+                    <button class="btn btn-secondary" onclick="toggleStudyGroupsFromSettings()" style="width: 100%;">
+                        Manage Study Group Preferences
+                    </button>
+                </div>
+                
+                <div class="settings-footer">
+                    <button class="btn btn-primary" onclick="toggleSettings()">Save &amp; Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Welcome Screen -->
+        <div id="welcomeScreen" class="screen active">
+            <div class="welcome-hero">
+                <div class="hero-background">
+                    <div class="gradient-orb orb-1"></div>
+                    <div class="gradient-orb orb-2"></div>
+                    <div class="gradient-orb orb-3"></div>
+                </div>
+                
+                <div class="hero-content">
+                    <div class="logo-badge">
+                        <span class="logo-icon">💎</span>
+                    </div>
+                    
+                    <h1 class="hero-title">
+                        Navigate Your
+                        <span class="gradient-text">Relationship Journey</span>
+                    </h1>
+                    
+                    <p class="hero-tagline">
+                        Specialized for AuDHD couples &amp; LGBTQ+ relationships
+                    </p>
+                    
+                    <div class="hero-stats">
+                        <div class="stat-pill">
+                            <span class="stat-icon">📚</span>
+                            <span>30 Days of Content</span>
+                        </div>
+                        <div class="stat-pill">
+                            <span class="stat-icon">🎯</span>
+                            <span>Self-Paced or Collaborative</span>
+                        </div>
+                        <div class="stat-pill">
+                            <span class="stat-icon">🏆</span>
+                            <span>15,000+ Points &amp; Certificates</span>
+                        </div>
+                    </div>
+                    
+                    <button id="beginJourneyBtn" class="hero-cta-button" onclick="startJourney(); return false;">
+                        <span>Begin Your Journey</span>
+                        <span class="arrow">→</span>
+                    </button>
+                    
+                    <p class="hero-subtitle">
+                        100% Solo-Completable • Optional Study Groups • Academic Certificate
+                    </p>
+                </div>
+            </div>
+            
+            <div class="welcome-features">
+                <div class="feature-card-visual">
+                    <div class="feature-icon-large">🎓</div>
+                    <h3>Academic Rigor</h3>
+                    <p>College-level curriculum with peer-reviewed research &amp; citations</p>
+                </div>
+                
+                <div class="feature-card-visual">
+                    <div class="feature-icon-large">🧠</div>
+                    <h3>AuDHD-Focused</h3>
+                    <p>Understanding autism + ADHD relationship dynamics with neuroscience-backed strategies</p>
+                </div>
+                
+                <div class="feature-card-visual">
+                    <div class="feature-icon-large">🏳️‍🌈</div>
+                    <h3>LGBTQ+ Research</h3>
+                    <p>Gottman Institute gay couples research, Esther Perel insights, and queer-affirming content</p>
+                </div>
+                
+                <div class="feature-card-visual">
+                    <div class="feature-icon-large">🤔</div>
+                    <h3>Decision Framework</h3>
+                    <p>Structured approach to decide: reconcile your partnership or embrace independent fulfillment</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Journal Button (Always Visible) -->
+        <button id="journalFloatingBtn" class="journal-floating-btn" onclick="toggleJournal()">
+            📝
+            <span class="journal-label">Journal</span>
+        </button>
+
+        <!-- Journal Sidebar Panel -->
+        <div id="journalPanel" class="journal-panel">
+            <div class="journal-header">
+                <h3>📝 Personal Journal</h3>
+                <button class="close-btn" onclick="toggleJournal()">✕</button>
+            </div>
+            
+            <div class="journal-tabs">
+                <button class="journal-tab active" data-tab="current" onclick="switchJournalTab('current')">
+                    Current Note
+                </button>
+                <button class="journal-tab" data-tab="all" onclick="switchJournalTab('all')">
+                    All Entries
+                </button>
+            </div>
+            
+            <div class="journal-content">
+                <!-- Current Note Tab -->
+                <div id="journalTabCurrent" class="journal-tab-content active">
+                    <div class="note-info">
+                        <span class="note-context" id="currentContext">General Note</span>
+                        <span class="note-time" id="lastSaved">Unsaved</span>
+                    </div>
+                    
+                    <textarea 
+                        id="journalTextarea"
+                        class="journal-textarea-panel"
+                        placeholder="Write your thoughts, insights, reflections...&#10;&#10;• What resonated with you today?&#10;• What patterns did you notice?&#10;• How will you apply what you learned?&#10;• Any aha moments or breakthroughs?"
+                    ></textarea>
+                    
+                    <div class="journal-actions-panel">
+                        <button class="btn btn-primary" onclick="saveJournalNotePanel()">
+                            💾 Save Note
+                        </button>
+                        <button class="btn btn-secondary" onclick="autoSaveToggle()">
+                            <span id="autoSaveIcon">⏱️</span> Auto-Save: <span id="autoSaveStatus">Off</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- All Entries Tab -->
+                <div id="journalTabAll" class="journal-tab-content">
+                    <div class="entries-list" id="entriesList">
+                        <!-- Dynamically populated -->
+                    </div>
+                    <div class="journal-export">
+                        <button class="btn btn-primary" onclick="exportAllJournalEntries()">
+                            📥 Export All Entries
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Overlay for journal panel -->
+        <div id="journalOverlay" class="journal-overlay" onclick="toggleJournal()"></div>
+
+        <!-- Dashboard Screen -->
+        <div id="dashboardScreen" class="screen">
+            <div class="dashboard-container">
+                <div class="dashboard-header">
+                    <h1>Your Recovery Dashboard</h1>
+                    <div style="background: linear-gradient(135deg, var(--color-bg-1), var(--color-bg-3)); padding: 16px 24px; border-radius: 12px; margin-top: 16px; border-left: 4px solid var(--color-primary);">
+                        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: var(--color-text);">
+                            <strong>🧠 Your Personalized Focus:</strong> AuDHD relationship dynamics • 16-year partnership • LGBTQ+ insights • Decision framework: reconcile or independent fulfillment
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Triple Quote Card -->
+                <div class="triple-quote-card">
+                    <div class="quote-section left-section">
+                        <div class="section-header">
+                            <span class="section-icon">💭</span>
+                            <h4>Quote of the Day</h4>
+                        </div>
+                        <blockquote class="quote-text" id="dailyQuote">
+                            "Your worth is not determined by what you do for others. You are valuable simply because you exist."
+                        </blockquote>
+                    </div>
+                    
+                    <div class="card-divider-vertical"></div>
+                    
+                    <div class="quote-section middle-section">
+                        <div class="section-header">
+                            <span class="section-icon">🎯</span>
+                            <h4>Today's Goal</h4>
+                        </div>
+                        <div class="goal-text" id="todaysGoal">
+                            <p>Notice one moment where you affirm your inherent worth—independent of any action or achievement.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card-divider-vertical"></div>
+                    
+                    <div class="quote-section right-section">
+                        <div class="section-header">
+                            <span class="section-icon">✨</span>
+                            <h4>Wisdom</h4>
+                        </div>
+                        <blockquote class="famous-quote" id="famousQuote">
+                            "You can't pour from an empty cup. Take care of yourself first."
+                            <cite>— Eleanor Brownn</cite>
+                        </blockquote>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" id="level-icon">🌱</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="current-level">Awakening</div>
+                            <div class="stat-label">Current Level</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🏆</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="badge-count">0/17</div>
+                            <div class="stat-label">Badges Earned</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="quiz-accuracy">0%</div>
+                            <div class="stat-label">Quiz Accuracy</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔥</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="streak-count">0</div>
+                            <div class="stat-label">Day Streak</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Combined Progress and Level Card -->
+                <div class="progress-level-card">
+                    <div class="card-section progress-section-split">
+                        <h3>📊 Overall Progress</h3>
+                        <div class="circular-progress">
+                            <svg viewBox="0 0 120 120" class="progress-ring">
+                                <defs>
+                                    <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:var(--color-primary);stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:var(--color-teal-400);stop-opacity:1" />
+                                    </linearGradient>
+                                </defs>
+                                <circle class="progress-ring-bg" cx="60" cy="60" r="54" />
+                                <circle class="progress-ring-fill" cx="60" cy="60" r="54" 
+                                        stroke-dasharray="339.292" 
+                                        stroke-dashoffset="339.292" 
+                                        id="progressCircle" />
+                            </svg>
+                            <div class="progress-text-overlay">
+                                <span class="progress-percentage" id="overallProgressPercent">0%</span>
+                                <span class="progress-label-small">Complete</span>
+                            </div>
+                        </div>
+                        <div class="progress-details">
+                            <div class="progress-stat">
+                                <span class="stat-value-progress" id="modulesCompletedCount">0</span>
+                                <span class="stat-label-progress">/ 21 Modules</span>
+                            </div>
+                            <div class="progress-stat">
+                                <span class="stat-value-progress" id="daysCompletedCount">0</span>
+                                <span class="stat-label-progress">/ 7 Days</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-divider"></div>
+                    
+                    <div class="card-section level-section-split">
+                        <h3>⭐ Your Level</h3>
+                        <div class="level-display">
+                            <div class="level-icon-large" id="levelIconLarge">🌱</div>
+                            <div class="level-info-details">
+                                <div class="level-name-large" id="levelNameLarge">Awakening</div>
+                                <div class="level-number-display">Level <span id="levelNumberDisplay">1</span></div>
+                            </div>
+                        </div>
+                        <div class="xp-bar-container">
+                            <div class="xp-bar">
+                                <div class="xp-fill" id="xpFill" style="width: 0%"></div>
+                            </div>
+                            <div class="xp-text">
+                                <span id="currentXP">0</span> / <span id="nextLevelXP">600</span> XP
+                            </div>
+                        </div>
+                        <div class="next-level-info">
+                            <span id="xpToNextLevel">600</span> XP to <strong id="nextLevelNameDisplay">Aware</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skill-mastery-section">
+                    <h2>🎯 Skill Mastery</h2>
+                    <div class="skills-grid">
+                        <div class="stat-card skill-card" data-skill="selfAwareness">
+                            <div class="stat-icon">👁️</div>
+                            <div class="stat-info">
+                                <div class="stat-number" id="scoreAwareness">0%</div>
+                                <div class="stat-label">Self-Awareness</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card skill-card" data-skill="cognitiveSkills">
+                            <div class="stat-icon">🧠</div>
+                            <div class="stat-info">
+                                <div class="stat-number" id="scoreCognitive">0%</div>
+                                <div class="stat-label">Cognitive Skills</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card skill-card" data-skill="boundarySetting">
+                            <div class="stat-icon">🛡️</div>
+                            <div class="stat-info">
+                                <div class="stat-number" id="scoreBoundary">0%</div>
+                                <div class="stat-label">Boundaries</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card skill-card" data-skill="shameResilience">
+                            <div class="stat-icon">💎</div>
+                            <div class="stat-info">
+                                <div class="stat-number" id="scoreShame">0%</div>
+                                <div class="stat-label">Shame Resilience</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card skill-card" data-skill="emotionalRegulation">
+                            <div class="stat-icon">🧘</div>
+                            <div class="stat-info">
+                                <div class="stat-number" id="scoreEmotional">0%</div>
+                                <div class="stat-label">Emotional Regulation</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card skill-card" data-skill="communication">
+                            <div class="stat-icon">💬</div>
+                            <div class="stat-info">
+                                <div class="stat-number" id="scoreCommunication">0%</div>
+                                <div class="stat-label">Communication</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="achievement-gallery-section" id="achievement-gallery-section" style="display: none;">
+                    <h2>🏆 Achievement Gallery</h2>
+                    <div id="achievement-gallery" class="achievement-gallery"></div>
+                </div>
+
+                <div class="days-section">
+                    <h2>Course Days</h2>
+                    <div id="days-list" class="days-grid"></div>
+                </div>
+
+                <button class="btn btn-primary btn-large" onclick="continueCurrentDay()">Continue Learning</button>
+            </div>
+        </div>
+
+        <!-- Day Overview Screen -->
+        <div id="dayOverviewScreen" class="screen"></div>
+
+        <!-- Module Screen -->
+        <div id="moduleScreen" class="screen">
+            <div id="module-content"></div>
+            <div id="module-content"></div>
+        </div>
+
+        <!-- Scenario Screen -->
+        <div id="scenarioScreen" class="screen"></div>
+
+        <!-- Recognition Exercise Screen -->
+        <div id="recognitionScreen" class="screen"></div>
+
+        <!-- Application Challenge Screen -->
+        <div id="applicationScreen" class="screen"></div>
+
+        <!-- Quiz Screen -->
+        <div id="quizScreen" class="screen"></div>
+
+        <!-- Exercise Screen -->
+        <div id="exerciseScreen" class="screen"></div>
+
+        <!-- Daily Challenge Screen -->
+        <div id="challengeScreen" class="screen"></div>
+
+        <!-- Progress Screen -->
+        <div id="progressScreen" class="screen">
+            <div class="container">
+                <h1>Your Progress</h1>
+                <div class="progress-details" id="progress-details"></div>
+                <button class="btn btn-secondary" onclick="showDashboard()">Back to Dashboard</button>
+            </div>
+        </div>
+
+        <!-- Badges Screen -->
+        <div id="badgesScreen" class="screen">
+            <div class="container">
+                <h1>Achievement Badges</h1>
+                <div id="badges-showcase" class="badges-grid"></div>
+                <button class="btn btn-secondary" onclick="showDashboard()">Back to Dashboard</button>
+            </div>
+        </div>
+
+        <!-- My Patterns Screen -->
+        <div id="patternsScreen" class="screen">
+            <div class="container">
+                <h1>My Patterns &amp; Insights</h1>
+                <div id="patterns-content"></div>
+                <button class="btn btn-secondary" onclick="showDashboard()">Back to Dashboard</button>
+            </div>
+        </div>
+
+        <!-- Review Screen -->
+        <div id="reviewScreen" class="screen">
+            <div class="container">
+                <div id="review-content"></div>
+            </div>
+        </div>
+
+        <!-- Journal Viewer Modal -->
+        <div id="journal-modal" class="modal">
+            <div class="modal-content journal-modal-content">
+                <div id="journal-modal-content"></div>
+            </div>
+        </div>
+
+        <!-- Cliffhanger Modal -->
+        <div id="cliffhanger-modal" class="modal">
+            <div class="modal-content cliffhanger-content">
+                <div id="cliffhanger-content-inner"></div>
+            </div>
+        </div>
+
+        <!-- Achievement Modal -->
+        <div id="achievement-modal" class="modal">
+            <div class="modal-content achievement-content">
+                <div class="achievement-icon" id="achievement-icon">🎉</div>
+                <h2 id="achievement-title">Achievement Unlocked!</h2>
+                <p id="achievement-description"></p>
+                <button class="btn btn-primary" onclick="closeAchievementModal()">Continue</button>
+            </div>
+        </div>
+
+        <!-- Points Animation -->
+        <div id="points-popup" class="points-popup">+100</div>
+        
+        <!-- Level Up Overlay -->
+        <div id="level-up-overlay" class="level-up-overlay">
+            <div class="level-up-content">
+                <div class="level-up-icon" id="level-up-icon">🌟</div>
+                <h1 id="level-up-text">Level Up!</h1>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shared Space - Personal Wellness Tracker</title>
+  <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+  <!-- Welcome Screen -->
+  <div id="welcome-screen" class="screen">
+    <div class="welcome-container">
+      <h1>💚 Welcome to Shared Space</h1>
+      <p class="subtitle">Your personal wellness &amp; communication tracker</p>
+      <div class="form-group">
+        <label class="form-label" for="user-name-input">What's your name?</label>
+        <input type="text" class="form-control" id="user-name-input" placeholder="Enter your name" autocomplete="name" />
+      </div>
+      <button class="btn btn--primary btn--lg" id="get-started-btn" onclick="startApp()">Get Started</button>
+      <div class="info-box">
+        <p><strong>💡 What you can do:</strong></p>
+        <p>Track emotions with the Feelings Wheel • Create discussion topics • Log appreciations • Celebrate accomplishments • Set boundaries • Save inspiring quotes • Time conversations</p>
+        <p style="margin-top: 12px; font-size: 12px; color: var(--color-text-secondary);">✨ All data stays in your browser session - private &amp; secure</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Application -->
+  <div id="main-app" class="hidden">
+    <!-- App Header -->
+    <div class="app-header">
+      <div class="header-content">
+        <h1>💚 Shared Space</h1>
+        <div class="header-actions">
+          <span class="current-user">Welcome, <span id="user-display-name"></span>!</span>
+          <button class="btn btn--sm btn--secondary" onclick="downloadDashboard()">📥 Download</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="main-nav">
+      <button class="nav-btn active" data-view="dashboard" onclick="showView('dashboard')">Dashboard</button>
+      <button class="nav-btn" data-view="topics" onclick="showView('topics')">Topics</button>
+      <button class="nav-btn" data-view="logs" onclick="showView('logs')">Logs</button>
+      <button class="nav-btn" data-view="download" onclick="showView('download')">Download/Export</button>
+    </nav>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+      
+      <!-- Dashboard View -->
+      <div id="dashboard-view" class="view active">
+        <div class="content-area">
+          <!-- Hero Section -->
+          <div class="hero-section">
+            <div class="hero-content">
+              <h1 class="hero-title">How are you feeling today?</h1>
+              <p class="hero-subtitle">Track your emotions and communicate mindfully</p>
+              <div class="feelings-wheel-hero">
+                <svg class="feelings-wheel-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Wheel rendered dynamically -->
+                </svg>
+              </div>
+              <button class="btn btn--primary btn--hero" onclick="openFeelingsCheckIn()">💚 New Feelings Check-In</button>
+            </div>
+          </div>
+
+          <!-- Quick Stats -->
+          <div class="quick-stats-grid">
+            <div class="stat-card-modern glass-card">
+              <div class="stat-icon">💚</div>
+              <div class="stat-number" id="checkins-today-stat">0</div>
+              <div class="stat-label">Check-ins Today</div>
+            </div>
+            <div class="stat-card-modern glass-card">
+              <div class="stat-icon">⏱️</div>
+              <div class="stat-number" id="timer-display-mini">0 min</div>
+              <div class="stat-label">Discussion Time</div>
+            </div>
+            <div class="stat-card-modern glass-card">
+              <div class="stat-icon">🔥</div>
+              <div class="stat-number" id="streak-counter">0</div>
+              <div class="stat-label">Day Streak</div>
+            </div>
+            <div class="stat-card-modern glass-card">
+              <div class="stat-icon">📝</div>
+              <div class="stat-number" id="topics-count">0</div>
+              <div class="stat-label">Active Topics</div>
+            </div>
+          </div>
+
+          <!-- Daily Timer Widget -->
+          <div class="daily-timer-widget glass-card">
+            <h3>⏱️ 15-Minute Discussion Timer</h3>
+            <div id="timer-display" class="timer-display">15:00</div>
+            <div class="timer-controls">
+              <button class="btn btn--primary" id="start-timer-btn" onclick="startTimer()">Start</button>
+              <button class="btn btn--secondary" id="pause-timer-btn" onclick="pauseTimer()" disabled>Pause</button>
+              <button class="btn btn--secondary" onclick="resetTimer()">Reset</button>
+            </div>
+            <div class="timer-progress-bar">
+              <div class="timer-progress-fill" id="timer-progress-fill" style="width: 0%;"></div>
+            </div>
+            <p class="timer-goal">Goal: 15 minutes • Alerts at 10, 5, 2 minutes</p>
+          </div>
+
+          <!-- Recent Topics -->
+          <div class="dashboard-section">
+            <h2 class="section-title">📝 Recent Topics</h2>
+            <div class="dashboard-actions">
+              <button class="btn btn--primary" onclick="openNewTopic()">➕ New Topic</button>
+              <button class="btn btn--outline" onclick="showView('topics')">View All Topics</button>
+            </div>
+            <div id="recent-topics-list" class="topics-grid"></div>
+          </div>
+
+          <!-- Ground Rules -->
+          <div class="dashboard-section">
+            <div class="ground-rules-card glass-card">
+              <div class="card-header-collapsible" onclick="toggleGroundRules()">
+                <h3>🤝 Our Communication Ground Rules</h3>
+                <span class="collapse-icon" id="ground-rules-toggle">▼</span>
+              </div>
+              <div class="ground-rules-grid" id="ground-rules-content"></div>
+            </div>
+          </div>
+
+          <!-- Communication Reminders -->
+          <div class="dashboard-section">
+            <h2 class="section-title">💡 Communication Reminders</h2>
+            <div class="reminders-grid" id="communication-reminders-grid"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Topics View -->
+      <div id="topics-view" class="view">
+        <div class="content-area">
+          <div class="view-header">
+            <h2>📝 Discussion Topics</h2>
+            <button class="btn btn--primary" onclick="openNewTopic()">➕ New Topic</button>
+          </div>
+          <div id="topics-container" class="topics-list"></div>
+        </div>
+      </div>
+
+      <!-- Topic Detail View -->
+      <div id="topic-detail-view" class="view">
+        <div class="content-area">
+          <button class="btn btn--secondary" onclick="goBackFromDetail()">← Back to Topics</button>
+          <div id="topic-detail-content"></div>
+        </div>
+      </div>
+
+      <!-- Logs View -->
+      <div id="logs-view" class="view">
+        <div class="content-area">
+          <h2>📊 Activity Logs</h2>
+          <div class="logs-tabs">
+            <button class="log-tab-btn active" data-log="feelings" onclick="switchLogTab('feelings')">Feelings Journal</button>
+            <button class="log-tab-btn" data-log="appreciation" onclick="switchLogTab('appreciation')">Appreciation</button>
+            <button class="log-tab-btn" data-log="accomplishments" onclick="switchLogTab('accomplishments')">Accomplishments</button>
+            <button class="log-tab-btn" data-log="boundaries" onclick="switchLogTab('boundaries')">Boundaries</button>
+            <button class="log-tab-btn" data-log="quotes" onclick="switchLogTab('quotes')">Quotes</button>
+          </div>
+          <div id="logs-content"></div>
+        </div>
+      </div>
+
+      <!-- Download/Export View -->
+      <div id="download-view" class="view">
+        <div class="content-area">
+          <h2>📥 Download &amp; Export</h2>
+          <p class="view-description">Download your journal data and deployment files</p>
+          
+          <div class="download-options">
+            <div class="glass-card">
+              <h3>📝 Download Journal</h3>
+              <p style="margin: 16px 0; color: var(--color-text-secondary);">Export all your feelings check-ins, topics, appreciations, and more as a text file.</p>
+              <button class="btn btn--primary" onclick="downloadFullJournal()">Download Complete Journal</button>
+            </div>
+            
+            <div class="glass-card">
+              <h3>🖨️ Print Dashboard</h3>
+              <p style="margin: 16px 0; color: var(--color-text-secondary);">Print a formatted summary of your current dashboard.</p>
+              <button class="btn btn--primary" onclick="printDashboard()">Print Dashboard</button>
+            </div>
+            
+            <div class="glass-card">
+              <h3>📦 Deployment Files</h3>
+              <p style="margin: 16px 0; color: var(--color-text-secondary);">Download configuration files for deploying this app.</p>
+              <button class="btn btn--secondary" onclick="downloadManifest()">manifest.json</button>
+              <button class="btn btn--secondary" onclick="downloadServiceWorker()">service-worker.js</button>
+              <button class="btn btn--secondary" onclick="downloadReadme()">README.md</button>
+              <button class="btn btn--secondary" onclick="downloadPrivacy()">PRIVACY.md</button>
+              <button class="btn btn--secondary" onclick="downloadLicense()">LICENSE</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- New Topic Modal -->
+  <div id="new-topic-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>📝 Create New Topic</h3>
+        <button class="modal-close" onclick="closeNewTopic()">&times;</button>
+      </div>
+      <form id="new-topic-form">
+        <div class="form-group">
+          <label class="form-label">Topic Title</label>
+          <input type="text" class="form-control" id="topic-title" placeholder="What do you want to discuss?" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">With (Person's Name)</label>
+          <input type="text" class="form-control" id="topic-with" placeholder="e.g., Partner, Roommate, Friend" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category Hashtags</label>
+          <p class="form-hint">Select relevant categories</p>
+          <input type="hidden" id="selected-categories">
+          <div id="category-hashtags" class="hashtag-suggestions"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Urgency Level</label>
+          <select class="form-control" id="topic-urgency">
+            <option value="Low">Low - Can wait</option>
+            <option value="Medium" selected>Medium - Important soon</option>
+            <option value="High">High - Urgent</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Discussion Date (Optional)</label>
+          <input type="date" class="form-control" id="discussion-date">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bullet Points / Notes</label>
+          <textarea class="form-control" id="topic-bullets" rows="4" placeholder="Key points you want to discuss..."></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn--primary">Create Topic</button>
+          <button type="button" class="btn btn--secondary" onclick="closeNewTopic()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+    let appData = {
+      userName: '',
+      checkIns: [],
+      topics: []
+    };
+
+    let currentEmotion = '';
+
+    // START APP
+    function startApp() {
+      console.log('startApp called');
+      const input = document.getElementById('userName');
+      const name = input.value.trim();
+      
+      if (!name) {
+        alert('Please enter your name');
+        input.focus();
+        return;
+      }
+      
+      appData.userName = name;
+      
+      document.getElementById('welcome').classList.add('hidden');
+      document.getElementById('app').classList.remove('hidden');
+      document.getElementById('displayName').textContent = name;
+      
+      updateCounts();
+      renderJournal();
+      renderTopics();
+      
+      console.log('App started successfully for:', name);
+    }
+
+    // SHOW VIEW
+    function showView(viewName) {
+      console.log('Showing view:', viewName);
+      document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      
+      const view = document.getElementById(viewName);
+      if (view) {
+        view.classList.remove('hidden');
+      }
+      
+      const navBtn = document.querySelector(`.nav-btn[onclick*="'${viewName}'"]`);
+      if (navBtn) {
+        navBtn.classList.add('active');
+      }
+      
+      if (viewName === 'journal') renderJournal();
+      if (viewName === 'topics') renderTopics();
+    }
+
+    // SELECT EMOTION
+    function selectEmotion(btn, emotion) {
+      document.querySelectorAll('.emotion-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      currentEmotion = emotion;
+      console.log('Selected emotion:', emotion);
+    }
+
+    // SAVE CHECK-IN
+    function saveCheckIn() {
+      if (!currentEmotion) {
+        alert('Please select an emotion');
+        return;
+      }
+      
+      const notes = document.getElementById('checkInNotes').value.trim();
+      
+      const checkIn = {
+        id: Date.now(),
+        date: new Date().toISOString(),
+        emotion: currentEmotion,
+        notes: notes
+      };
+      
+      appData.checkIns.push(checkIn);
+      console.log('Check-in saved:', checkIn);
+      
+      alert('✓ Check-in saved!');
+      
+      // Reset form
+      document.getElementById('checkInNotes').value = '';
+      currentEmotion = '';
+      document.querySelectorAll('.emotion-btn').forEach(b => b.classList.remove('selected'));
+      
+      updateCounts();
+      showView('dashboard');
+    }
+
+    // SAVE TOPIC
+    function saveTopic() {
+      const title = document.getElementById('topicTitle').value.trim();
+      const withPerson = document.getElementById('topicWith').value.trim();
+      const urgency = document.getElementById('topicUrgency').value;
+      const notes = document.getElementById('topicNotes').value.trim();
+      
+      if (!title) {
+        alert('Please enter a topic title');
+        document.getElementById('topicTitle').focus();
+        return;
+      }
+      
+      if (!withPerson) {
+        alert('Please enter who this topic is with');
+        document.getElementById('topicWith').focus();
+        return;
+      }
+      
+      const topic = {
+        id: Date.now(),
+        date: new Date().toISOString(),
+        title: title,
+        withPerson: withPerson,
+        urgency: urgency,
+        notes: notes
+      };
+      
+      appData.topics.push(topic);
+      console.log('Topic created:', topic);
+      
+      alert('✓ Topic created!');
+      
+      // Reset form
+      document.getElementById('topicTitle').value = '';
+      document.getElementById('topicWith').value = '';
+      document.getElementById('topicNotes').value = '';
+      document.getElementById('topicUrgency').value = 'medium';
+      
+      updateCounts();
+      renderTopics();
+    }
+
+    // UPDATE COUNTS
+    function updateCounts() {
+      document.getElementById('checkInCount').textContent = appData.checkIns.length;
+      document.getElementById('topicCount').textContent = appData.topics.length;
+    }
+
+    // RENDER JOURNAL
+    function renderJournal() {
+      const container = document.getElementById('journalEntries');
+      
+      if (appData.checkIns.length === 0) {
+        container.innerHTML = '<div class="empty-state">No check-ins yet. Start logging your feelings!</div>';
+        return;
+      }
+      
+      const sortedCheckIns = [...appData.checkIns].reverse();
+      
+      container.innerHTML = sortedCheckIns.map(c => {
+        const date = new Date(c.date);
+        return `
+          <div class="entry-card">
+            <h3>${getEmoji(c.emotion)} ${c.emotion}</h3>
+            <p>${c.notes || '<em>No notes</em>'}</p>
+            <div class="entry-meta">${date.toLocaleDateString()} at ${date.toLocaleTimeString()}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // RENDER TOPICS
+    function renderTopics() {
+      const container = document.getElementById('topicsList');
+      
+      if (appData.topics.length === 0) {
+        container.innerHTML = '<div class="empty-state">No topics yet.</div>';
+        return;
+      }
+      
+      const sortedTopics = [...appData.topics].reverse();
+      
+      container.innerHTML = sortedTopics.map(t => {
+        const date = new Date(t.date);
+        const urgencyLabel = t.urgency.charAt(0).toUpperCase() + t.urgency.slice(1);
+        return `
+          <div class="topic-card ${t.urgency}">
+            <h3>${t.title}</h3>
+            <div>
+              <span class="badge">👤 ${t.withPerson}</span>
+              <span class="badge">🎯 ${urgencyLabel}</span>
+            </div>
+            ${t.notes ? `<p style="margin-top: 10px;">${t.notes}</p>` : ''}
+            <div class="entry-meta">${date.toLocaleDateString()} at ${date.toLocaleTimeString()}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // EXPORT DATA
+    function exportData() {
+      const timestamp = new Date().toISOString().split('T')[0];
+      let content = '=================================\n';
+      content += 'SHARED SPACE - WELLNESS JOURNAL\n';
+      content += '=================================\n\n';
+      content += `User: ${appData.userName}\n`;
+      content += `Generated: ${new Date().toLocaleString()}\n\n`;
+      
+      content += '\n=== FEELINGS CHECK-INS ===\n\n';
+      appData.checkIns.forEach(c => {
+        const date = new Date(c.date);
+        content += `${date.toLocaleString()}\n`;
+        content += `Emotion: ${c.emotion}\n`;
+        if (c.notes) content += `Notes: ${c.notes}\n`;
+        content += '\n---\n\n';
+      });
+      
+      content += '\n=== TOPICS ===\n\n';
+      appData.topics.forEach(t => {
+        const date = new Date(t.date);
+        content += `${t.title}\n`;
+        content += `With: ${t.withPerson}\n`;
+        content += `Urgency: ${t.urgency}\n`;
+        if (t.notes) content += `Notes: ${t.notes}\n`;
+        content += `Created: ${date.toLocaleString()}\n`;
+        content += '\n---\n\n';
+      });
+      
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `shared-space-journal-${timestamp}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      alert('✓ Data exported!');
+    }
+
+    // HELPER: Get emoji for emotion
+    function getEmoji(emotion) {
+      const emojis = {
+        'Happy': '😊',
+        'Sad': '😢',
+        'Angry': '😠',
+        'Fearful': '😨',
+        'Surprised': '😲',
+        'Calm': '😌'
+      };
+      return emojis[emotion] || '💚';
+    }
+

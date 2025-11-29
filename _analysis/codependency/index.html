@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7-Day Codependency Recovery Intensive</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation Bar -->
+        <nav id="navbar" class="navbar" style="display: none;">
+            <div class="nav-container">
+                <div class="nav-brand">Recovery Course</div>
+                <div class="nav-links">
+                    <button class="nav-btn" onclick="showDashboard()">Dashboard</button>
+                    <button class="nav-btn" onclick="showProgress()">Progress</button>
+                    <button class="nav-btn" onclick="showBadges()">Badges</button>
+                </div>
+                <div class="nav-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Level:</span>
+                        <span id="nav-level" class="stat-value">Awakening</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Points:</span>
+                        <span id="nav-points" class="stat-value">0</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="screen active">
+            <div class="welcome-container">
+                <h1 class="welcome-title">7-Day Codependency Recovery Intensive</h1>
+                <h2 class="welcome-subtitle">Break Free from Codependency, Blame, and Shame</h2>
+                <div class="welcome-card">
+                    <p class="welcome-text">Welcome to your transformative journey! This intensive 7-day course will guide you through understanding and overcoming codependency, managing blame and shame, and building healthy relationships.</p>
+                    <div class="course-features">
+                        <div class="feature">
+                            <div class="feature-icon">📚</div>
+                            <div class="feature-text">20+ Interactive Modules</div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">🎯</div>
+                            <div class="feature-text">Engaging Quizzes &amp; Exercises</div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">🏆</div>
+                            <div class="feature-text">10 Achievement Badges</div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">⚡</div>
+                            <div class="feature-text">Full Gamification</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-large" onclick="startCourse()">Begin Your Journey</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Screen -->
+        <div id="dashboard-screen" class="screen">
+            <div class="dashboard-container">
+                <div class="dashboard-header">
+                    <h1>Your Recovery Dashboard</h1>
+                    <p id="motivational-quote" class="motivational-quote"></p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="total-points">0</div>
+                            <div class="stat-label">Total Points</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="current-level">Awakening</div>
+                            <div class="stat-label">Current Level</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🏆</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="badge-count">0/10</div>
+                            <div class="stat-label">Badges Earned</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔥</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="streak-count">0</div>
+                            <div class="stat-label">Day Streak</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="progress-section">
+                    <h2>Overall Progress</h2>
+                    <div class="progress-bar-container">
+                        <div id="overall-progress-bar" class="progress-bar" style="width: 0%"></div>
+                    </div>
+                    <p class="progress-text" id="overall-progress-text">0% Complete</p>
+                </div>
+
+                <div class="level-progress-section">
+                    <h2>Level Progress</h2>
+                    <div class="level-info">
+                        <span id="current-level-name">Level 1: Awakening</span>
+                        <span id="next-level-info">Next: Aware at 500 points</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div id="level-progress-bar" class="progress-bar progress-bar-teal" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="days-section">
+                    <h2>Course Days</h2>
+                    <div id="days-list" class="days-grid"></div>
+                </div>
+
+                <button class="btn btn-primary btn-large" onclick="continueCurrentDay()">Continue Learning</button>
+            </div>
+        </div>
+
+        <!-- Day Overview Screen -->
+        <div id="day-overview-screen" class="screen"></div>
+
+        <!-- Module Screen -->
+        <div id="module-screen" class="screen"></div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="screen"></div>
+
+        <!-- Exercise Screen -->
+        <div id="exercise-screen" class="screen"></div>
+
+        <!-- Daily Challenge Screen -->
+        <div id="challenge-screen" class="screen"></div>
+
+        <!-- Progress Screen -->
+        <div id="progress-screen" class="screen">
+            <div class="container">
+                <h1>Your Progress</h1>
+                <div class="progress-details" id="progress-details"></div>
+                <button class="btn btn-secondary" onclick="showDashboard()">Back to Dashboard</button>
+            </div>
+        </div>
+
+        <!-- Badges Screen -->
+        <div id="badges-screen" class="screen">
+            <div class="container">
+                <h1>Achievement Badges</h1>
+                <div id="badges-showcase" class="badges-grid"></div>
+                <button class="btn btn-secondary" onclick="showDashboard()">Back to Dashboard</button>
+            </div>
+        </div>
+
+        <!-- Achievement Modal -->
+        <div id="achievement-modal" class="modal">
+            <div class="modal-content achievement-content">
+                <div class="achievement-icon" id="achievement-icon">🎉</div>
+                <h2 id="achievement-title">Achievement Unlocked!</h2>
+                <p id="achievement-description"></p>
+                <button class="btn btn-primary" onclick="closeAchievementModal()">Continue</button>
+            </div>
+        </div>
+
+        <!-- Points Animation -->
+        <div id="points-popup" class="points-popup">+100</div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

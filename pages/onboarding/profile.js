@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useApp } from '../index';
+import { useApp } from '../../lib/context';
 import { supabase } from '../../lib/supabaseClient';
 
 const ProfilePage = () => {
@@ -92,10 +92,10 @@ const ProfilePage = () => {
             <div
               key={step}
               className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${step === 3
-                  ? 'bg-teal-600 text-white'
-                  : step < 3
-                    ? 'bg-teal-200 text-teal-800'
-                    : 'bg-gray-200 text-gray-500'
+                ? 'bg-teal-600 text-white'
+                : step < 3
+                  ? 'bg-teal-200 text-teal-800'
+                  : 'bg-gray-200 text-gray-500'
                 }`}
             >
               {step}

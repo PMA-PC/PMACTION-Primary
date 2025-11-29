@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useApp } from '../index';
+import { useApp } from '../../lib/context';
 
 const ScreeningPage = () => {
   const router = useRouter();
@@ -83,10 +83,10 @@ const ScreeningPage = () => {
             <div
               key={step}
               className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${step === 4
-                  ? 'bg-teal-600 text-white'
-                  : step < 4
-                    ? 'bg-teal-200 text-teal-800'
-                    : 'bg-gray-200 text-gray-500'
+                ? 'bg-teal-600 text-white'
+                : step < 4
+                  ? 'bg-teal-200 text-teal-800'
+                  : 'bg-gray-200 text-gray-500'
                 }`}
             >
               {step}
@@ -116,8 +116,8 @@ const ScreeningPage = () => {
                   <label
                     key={index}
                     className={`relative block rounded-lg border p-4 cursor-pointer hover:border-teal-500 focus-within:ring-1 focus-within:ring-teal-500 transition-colors ${answers[questions[currentQuestion].id] === index
-                        ? 'bg-teal-50 border-teal-500 ring-1 ring-teal-500'
-                        : 'border-gray-300'
+                      ? 'bg-teal-50 border-teal-500 ring-1 ring-teal-500'
+                      : 'border-gray-300'
                       }`}
                   >
                     <div className="flex items-center">
@@ -146,8 +146,8 @@ const ScreeningPage = () => {
                 </button>
                 <button
                   onClick={handleNextQuestion}
-                  disabled={currentQuestion >= questions.length - 1 && !isCompleted}
-                  className="px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+                  disabled={answers[questions[currentQuestion].id] === undefined}
+                  className="px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {currentQuestion < questions.length - 1 ? 'Next' : 'Finish'}
                 </button>

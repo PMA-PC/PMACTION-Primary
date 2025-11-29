@@ -1,13 +1,14 @@
 // pages/_app.js
-import '../styles/globals.css' // If you plan to add global styles later
-
-// Import the AppProvider we defined
-import { AppProvider } from './index'; // Import from index.js where we defined it
+import '../styles/globals.css'; // Global styles
+import { AppProvider } from '../lib/context';
+import { OnboardingProvider } from '../context/OnboardingContext';
 
 function MyApp({ Component, pageProps }) {
   return (
     <AppProvider>
-      <Component {...pageProps} />
+      <OnboardingProvider>
+        <Component {...pageProps} />
+      </OnboardingProvider>
     </AppProvider>
   );
 }

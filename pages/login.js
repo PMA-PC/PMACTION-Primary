@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { supabase } from '../lib/supabaseClient';
-import { useApp } from './index';
+import { useApp } from '../lib/context';
 
 const LoginPage = () => {
   const router = useRouter();
@@ -75,6 +75,9 @@ const LoginPage = () => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
+        options: {
+          scopes: 'https://www.googleapis.com/auth/youtube.readonly'
+        }
       });
       if (error) throw error;
     } catch (err) {

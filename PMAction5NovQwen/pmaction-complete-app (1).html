@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PMAction - Your Wellness Journey</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; }
+    .modal-backdrop { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); }
+    .feelings-wheel { transform-origin: center; transition: transform 0.3s; }
+    .feeling-segment { cursor: pointer; transition: all 0.3s; }
+    .feeling-segment:hover { opacity: 0.8; transform: scale(1.05); }
+    .subcategory-btn { transition: all 0.3s; }
+    .subcategory-btn:hover { transform: translateY(-2px); }
+    .toast { z-index: 9999; }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-teal-900 text-white min-h-screen">
+
+  <!-- Welcome Screen -->
+  <div id="welcome-screen" class="min-h-screen flex items-center justify-center p-6">
+    <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-10 max-w-md w-full shadow-2xl border border-white/20">
+      <div class="text-center mb-8">
+        <div class="text-6xl mb-4">💚</div>
+        <h1 class="text-4xl font-bold mb-3 bg-gradient-to-r from-teal-400 to-green-400 bg-clip-text text-transparent">
+          Welcome to PMAction
+        </h1>
+        <p class="text-slate-300 text-lg">Your personal wellness companion</p>
+      </div>
+      
+      <div class="mb-6">
+        <label class="block text-sm font-semibold mb-2 text-slate-200">What's your name?</label>
+        <input type="text" id="user-name" 
+          class="w-full px-4 py-3 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-slate-400 focus:border-teal-400 focus:outline-none transition-all"
+          placeholder="Enter your name" autofocus>
+      </div>
+      
+      <button onclick="app.startApp()" 
+        class="w-full bg-gradient-to-r from-teal-500 to-green-500 hover:from-teal-600 hover:to-green-600 text-white font-bold py-4 rounded-xl transition-all transform hover:scale-105 shadow-lg">
+        Get Started
+      </button>
+      
+      <p class="text-center text-sm text-slate-400 mt-6">
+        ✨ All data saved locally and securely
+      </p>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="main-app" class="hidden">
+    <!-- Header -->
+    <header class="bg-black/30 backdrop-blur-lg border-b border-white/10 sticky top-0 z-40">
+      <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+          <div class="text-3xl">💚</div>
+          <div>
+            <h1 class="text-xl font-bold">PMAction</h1>
+            <p class="text-xs text-slate-300">Hi, <span id="display-name"></span>!</p>
+          </div>
+        </div>
+        <button onclick="app.showView('settings')" class="p-2 hover:bg-white/10 rounded-lg transition-all">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-6 pb-24">
+      <!-- Dashboard View -->
+      <div id="dashboard-view" class="view space-y-6">
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-4 border border-white/10">
+            <div class="text-3xl mb-2">💚</div>
+            <div class="text-2xl font-bold" id="checkins-count">0</div>
+            <div class="text-xs text-slate-300 uppercase tracking-wide">Check-ins</div>
+          </div>
+          <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-4 border border-white/10">
+            <div class="text-3xl mb-2">🔥</div>
+            <div class="text-2xl font-bold" id="streak-count">0</div>
+            <div class="text-xs text-slate-300 uppercase tracking-wide">Day Streak</div>
+          </div>
+          <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-4 border border-white/10">
+            <div class="text-3xl mb-2">✅</div>
+            <div class="text-2xl font-bold" id="habits-today">0/0</div>
+            <div class="text-xs text-slate-300 uppercase tracking-wide">Habits</div>
+          </div>
+          <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-4 border border-white/10">
+            <div class="text-3xl mb-2">📝</div>
+            <div class="text-2xl font-bold" id="topics-count">0</div>
+            <div class="text-xs text-slate-300 uppercase tracking-wide">Topics</div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="bg-gradient-to-r from-teal-600/20 to-green-600/20 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+          <h2 class="text-2xl font-bold mb-4">Quick Actions</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <button onclick="app.openFeelingsWheel()" 
+              class="bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl p-4 text-left transition-all">
+              <div class="text-2xl mb-2">💚</div>
+              <div class="font-semibold">Feelings Check-In</div>
+              <div class="text-sm text-slate-300">Track your emotions</div>
+            </button>
+            <button onclick="app.openNewTopic()" 
+              class="bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl p-4 text-left transition-all">
+              <div class="text-2xl mb-2">📝</div>
+              <div class="font-semibold">New Topic</div>
+              <div class="text-sm text-slate-300">Create discussion point</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Today's Habits -->
+        <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold">Today's Habits</h2>
+            <button onclick="app.addHabit()" class="text-sm bg-teal-600 hover:bg-teal-700 px-4 py-2 rounded-lg">
+              + Add
+            </button>
+          </div>
+          <div id="habits-list" class="space-y-3"></div>
+        </div>
+
+        <!-- Recent Topics -->
+        <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+          <h2 class="text-2xl font-bold mb-4">Recent Topics</h2>
+          <div id="topics-list" class="space-y-3"></div>
+        </div>
+      </div>
+
+      <!-- Programs View -->
+      <div id="programs-view" class="view hidden space-y-6">
+        <h2 class="text-3xl font-bold mb-4">Training Programs</h2>
+        <div id="programs-list" class="space-y-4"></div>
+      </div>
+
+      <!-- Content Library View -->
+      <div id="content-view" class="view hidden space-y-6">
+        <h2 class="text-3xl font-bold mb-4">Content Library</h2>
+        
+        <!-- Conditions -->
+        <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+          <h3 class="text-xl font-bold mb-4">Mental Health Conditions</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="conditions-list"></div>
+        </div>
+
+        <!-- Blog Posts -->
+        <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+          <h3 class="text-xl font-bold mb-4">Latest Articles</h3>
+          <div class="space-y-4" id="blog-list"></div>
+        </div>
+      </div>
+
+      <!-- Journal View -->
+      <div id="journal-view" class="view hidden space-y-6">
+        <div class="flex justify-between items-center">
+          <h2 class="text-3xl font-bold">Activity Logs</h2>
+        </div>
+        
+        <!-- Log Tabs -->
+        <div class="flex gap-2 overflow-x-auto pb-2">
+          <button onclick="app.switchLogTab('feelings')" data-tab="feelings"
+            class="log-tab px-4 py-2 rounded-lg bg-teal-600 text-white font-semibold whitespace-nowrap">
+            Feelings Journal
+          </button>
+          <button onclick="app.switchLogTab('appreciation')" data-tab="appreciation"
+            class="log-tab px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 font-semibold whitespace-nowrap">
+            Appreciation
+          </button>
+          <button onclick="app.switchLogTab('accomplishments')" data-tab="accomplishments"
+            class="log-tab px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 font-semibold whitespace-nowrap">
+            Accomplishments
+          </button>
+          <button onclick="app.switchLogTab('boundaries')" data-tab="boundaries"
+            class="log-tab px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 font-semibold whitespace-nowrap">
+            Boundaries
+          </button>
+          <button onclick="app.switchLogTab('quotes')" data-tab="quotes"
+            class="log-tab px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 font-semibold whitespace-nowrap">
+            Quotes
+          </button>
+        </div>
+
+        <div id="log-content" class="space-y-4"></div>
+      </div>
+
+      <!-- Settings View -->
+      <div id="settings-view" class="view hidden space-y-6">
+        <h2 class="text-3xl font-bold mb-4">Settings</h2>
+        
+        <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+          <h3 class="text-xl font-bold mb-4">Export Data</h3>
+          <button onclick="app.exportData()" 
+            class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-semibold">
+            📥 Download All Data
+          </button>
+        </div>
+
+        <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+          <h3 class="text-xl font-bold mb-4">About</h3>
+          <p class="text-slate-300 mb-2">PMAction v2.0 - Phase 1</p>
+          <p class="text-slate-400 text-sm">All data stored locally in your browser</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-black/50 backdrop-blur-lg border-t border-white/10 px-2 py-3 flex justify-around z-50">
+      <button onclick="app.showView('dashboard')" data-view="dashboard" class="nav-btn flex flex-col items-center gap-1 p-2 rounded-lg active">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        <span class="text-xs font-medium">Home</span>
+      </button>
+      <button onclick="app.showView('programs')" data-view="programs" class="nav-btn flex flex-col items-center gap-1 p-2 rounded-lg">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+        <span class="text-xs font-medium">Programs</span>
+      </button>
+      <button onclick="app.showView('content')" data-view="content" class="nav-btn flex flex-col items-center gap-1 p-2 rounded-lg">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+        <span class="text-xs font-medium">Library</span>
+      </button>
+      <button onclick="app.showView('journal')" data-view="journal" class="nav-btn flex flex-col items-center gap-1 p-2 rounded-lg">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+        <span class="text-xs font-medium">Journal</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Modal Container -->
+  <div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal-backdrop">
+    <div class="bg-slate-900 rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl border border-white/20">
+      <div class="flex justify-between items-center p-6 border-b border-white/10">
+        <h3 id="modal-title" class="text-2xl font-bold"></h3>
+        <button onclick="app.closeModal()" class="text-slate-400 hover:text-white text-3xl">&times;</button>
+      </div>
+      <div id="modal-body" class="p-6 overflow-y-auto flex-1"></div>
+      <div id="modal-footer" class="p-6 border-t border-white/10"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast fixed bottom-24 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-xl opacity-0 transition-opacity duration-300 pointer-events-none"></div>
+
+  <script>
+    const app = {
+      data: {
+        userName: '',
+        checkIns: [],
+        habits: [],
+        topics: [],
+        programs: [],
+        appreciations: [],
+        accomplishments: [],
+        boundaries: [],
+        quotes: [],
+        currentFeeling: null,
+        currentSubcategory: null
+      },
+
+      feelingsWheel: {
+        'Happy': { color: '#FFC107', subs: ['Playful', 'Content', 'Interested', 'Proud', 'Joyful'] },
+        'Sad': { color: '#2196F3', subs: ['Lonely', 'Vulnerable', 'Despair', 'Guilty', 'Depressed', 'Hurt'] },
+        'Angry': { color: '#E91E63', subs: ['Let down', 'Humiliated', 'Bitter', 'Mad', 'Aggressive'] },
+        'Fearful': { color: '#9C27B0', subs: ['Scared', 'Anxious', 'Insecure', 'Weak', 'Rejected'] },
+        'Surprised': { color: '#FF9800', subs: ['Startled', 'Confused', 'Amazed', 'Excited'] },
+        'Disgusted': { color: '#4CAF50', subs: ['Disapproving', 'Disappointed', 'Awful', 'Repelled'] },
+        'Indifferent': { color: '#9E9E9E', subs: ['Bored', 'Tired', 'Busy'] }
+      },
+
+      conditions: [
+        { id: 'adhd', title: 'ADHD & Focus', icon: '🧠', desc: 'Understanding attention and executive function' },
+        { id: 'anxiety', title: 'Anxiety Management', icon: '😰', desc: 'Tools for managing worry and stress' },
+        { id: 'depression', title: 'Depression Support', icon: '💙', desc: 'Resources for low mood and motivation' },
+        { id: 'autism', title: 'Autism Spectrum', icon: '🌈', desc: 'Neurodiversity and sensory support' }
+      ],
+
+      blogs: [
+        { 
+          id: 1,
+          title: '5 Mindfulness Techniques for Daily Practice',
+          excerpt: 'Discover simple mindfulness exercises you can integrate into your everyday routine...',
+          author: 'PMAction Team',
+          date: '2025-01-15'
+        }
+      ],
+
+      init() {
+        this.loadData();
+        if (this.data.userName) {
+          this.startApp(true);
+        }
+      },
+
+      startApp(skipInput = false) {
+        if (!skipInput) {
+          const nameInput = document.getElementById('user-name');
+          const name = nameInput.value.trim();
+          if (!name) {
+            alert('Please enter your name');
+            nameInput.focus();
+            return;
+          }
+          this.data.userName = name;
+        }
+
+        document.getElementById('welcome-screen').classList.add('hidden');
+        document.getElementById('main-app').classList.remove('hidden');
+        document.getElementById('display-name').textContent = this.data.userName;
+
+        this.initializeData();
+        this.saveData();
+        this.render();
+      },
+
+      initializeData() {
+        if (this.data.habits.length === 0) {
+          this.data.habits = [
+            { id: 1, name: 'Morning Meditation', icon: '🧘', completed: false, streak: 0 },
+            { id: 2, name: 'Gratitude Journal', icon: '📝', completed: false, streak: 0 },
+            { id: 3, name: 'Exercise', icon: '💪', completed: false, streak: 0 }
+          ];
+        }
+
+        if (this.data.programs.length === 0) {
+          this.data.programs = [
+            {
+              id: 1,
+              title: '7-Day Mindfulness Journey',
+              icon: '🧘',
+              duration: '7 days',
+              currentDay: 0,
+              totalDays: 7
+            },
+            {
+              id: 2,
+              title: '30-Day Habit Builder',
+              icon: '🎯',
+              duration: '30 days',
+              currentDay: 0,
+              totalDays: 30
+            }
+          ];
+        }
+      },
+
+      render() {
+        this.renderDashboard();
+        this.renderPrograms();
+        this.renderContent();
+        this.renderJournal();
+      },
+
+      renderDashboard() {
+        document.getElementById('checkins-count').textContent = this.data.checkIns.length;
+        document.getElementById('streak-count').textContent = this.calculateStreak();
+        document.getElementById('topics-count').textContent = this.data.topics.length;
+
+        const habitsList = document.getElementById('habits-list');
+        const completedHabits = this.data.habits.filter(h => h.completed).length;
+        document.getElementById('habits-today').textContent = `${completedHabits}/${this.data.habits.length}`;
+
+        habitsList.innerHTML = this.data.habits.map(habit => `
+          <div onclick="app.toggleHabit(${habit.id})" 
+            class="flex items-center gap-3 p-4 bg-white/5 hover:bg-white/10 rounded-xl cursor-pointer transition-all">
+            <div class="w-8 h-8 rounded-full border-2 ${habit.completed ? 'bg-teal-600 border-teal-600' : 'border-white/30'} flex items-center justify-center">
+              ${habit.completed ? '✓' : ''}
+            </div>
+            <div class="flex-1">
+              <div class="font-semibold ${habit.completed ? 'line-through text-slate-400' : ''}">${habit.icon} ${habit.name}</div>
+              ${habit.streak > 0 ? `<div class="text-sm text-orange-400">🔥 ${habit.streak} day streak</div>` : ''}
+            </div>
+          </div>
+        `).join('');
+
+        const topicsList = document.getElementById('topics-list');
+        if (this.data.topics.length === 0) {
+          topicsList.innerHTML = '<p class="text-slate-400 text-center py-4">No topics yet. Create your first one!</p>';
+        } else {
+          topicsList.innerHTML = this.data.topics.slice(-5).reverse().map(topic => `
+            <div class="p-4 bg-white/5 rounded-xl">
+              <div class="font-semibold mb-1">${topic.title}</div>
+              <div class="text-sm text-slate-400">With: ${topic.with}</div>
+            </div>
+          `).join('');
+        }
+      },
+
+      renderPrograms() {
+        const programsList = document.getElementById('programs-list');
+        programsList.innerHTML = this.data.programs.map(program => {
+          const progress = (program.currentDay / program.totalDays * 100).toFixed(0);
+          const isActive = program.currentDay > 0 && program.currentDay < program.totalDays;
+
+          return `
+            <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+              <div class="flex items-start gap-4">
+                <div class="text-5xl">${program.icon}</div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold mb-2">${program.title}</h3>
+                  <div class="text-sm text-slate-300 mb-3">${program.duration}</div>
+                  ${isActive ? `
+                    <div class="mb-3">
+                      <div class="flex justify-between text-sm mb-1">
+                        <span>Day ${program.currentDay}</span>
+                        <span>${progress}%</span>
+                      </div>
+                      <div class="w-full bg-white/20 rounded-full h-2">
+                        <div class="bg-teal-500 h-2 rounded-full" style="width: ${progress}%"></div>
+                      </div>
+                    </div>
+                  ` : ''}
+                  <button onclick="app.startProgram(${program.id})" 
+                    class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg font-semibold">
+                    ${program.currentDay === 0 ? 'Start Program' : 'Continue'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      },
+
+      renderContent() {
+        const conditionsList = document.getElementById('conditions-list');
+        conditionsList.innerHTML = this.conditions.map(condition => `
+          <div onclick="app.viewCondition('${condition.id}')" 
+            class="p-4 bg-white/5 hover:bg-white/10 rounded-xl cursor-pointer transition-all">
+            <div class="text-3xl mb-2">${condition.icon}</div>
+            <h4 class="font-bold mb-1">${condition.title}</h4>
+            <p class="text-sm text-slate-300">${condition.desc}</p>
+          </div>
+        `).join('');
+
+        const blogList = document.getElementById('blog-list');
+        blogList.innerHTML = this.blogs.map(blog => `
+          <div onclick="app.viewBlog(${blog.id})" 
+            class="p-5 bg-white/5 hover:bg-white/10 rounded-xl cursor-pointer transition-all">
+            <h4 class="font-bold text-lg mb-2">${blog.title}</h4>
+            <p class="text-slate-300 mb-3">${blog.excerpt}</p>
+            <div class="text-sm text-slate-400">By ${blog.author} • ${blog.date}</div>
+          </div>
+        `).join('');
+      },
+
+      renderJournal() {
+        const content = document.getElementById('log-content');
+        const currentTab = document.querySelector('.log-tab.bg-teal-600')?.dataset.tab || 'feelings';
+
+        if (currentTab === 'feelings') {
+          if (this.data.checkIns.length === 0) {
+            content.innerHTML = `
+              <div class="text-center py-12">
+                <p class="text-slate-400 mb-4">No check-ins yet</p>
+                <button onclick="app.openFeelingsWheel()" 
+                  class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-semibold">
+                  + New Feelings Check-In
+                </button>
+              </div>
+            `;
+          } else {
+            content.innerHTML = `
+              <button onclick="app.openFeelingsWheel()" 
+                class="w-full bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-semibold mb-4">
+                + New Feelings Check-In
+              </button>
+              ${this.data.checkIns.slice().reverse().map(entry => `
+                <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-5 border border-white/10">
+                  <div class="flex justify-between items-start mb-3">
+                    <div class="text-4xl">${this.getEmoji(entry.feeling)}</div>
+                    <div class="text-sm text-slate-400">${new Date(entry.timestamp).toLocaleString()}</div>
+                  </div>
+                  <div class="font-bold text-xl mb-2">${entry.feeling}</div>
+                  ${entry.subcategory ? `<div class="text-slate-300 mb-2">${entry.subcategory}</div>` : ''}
+                  ${entry.notes ? `<p class="text-slate-300 mt-3">${entry.notes}</p>` : ''}
+                </div>
+              `).join('')}
+            `;
+          }
+        } else if (currentTab === 'appreciation') {
+          content.innerHTML = `
+            <div class="bg-gradient-to-r from-yellow-600/20 to-orange-600/20 backdrop-blur-lg rounded-2xl p-6 border border-white/10 mb-4">
+              <h3 class="text-2xl font-bold mb-2">"Can't Never Could, Be Better!"</h3>
+            </div>
+            <button onclick="app.openAppreciation()" 
+              class="w-full bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-lg font-semibold mb-4">
+              + Add Appreciation
+            </button>
+            ${this.data.appreciations.length === 0 ? 
+              '<p class="text-center text-slate-400 py-8">No appreciations yet</p>' :
+              this.data.appreciations.slice().reverse().map(item => `
+                <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-5 border border-white/10">
+                  <p class="mb-2">${item.text}</p>
+                  <div class="text-sm text-slate-400">${new Date(item.timestamp).toLocaleString()}</div>
+                </div>
+              `).join('')
+            }
+          `;
+        } else if (currentTab === 'accomplishments') {
+          content.innerHTML = `
+            <button onclick="app.openAccomplishment()" 
+              class="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold mb-4">
+              + Log Accomplishment
+            </button>
+            ${this.data.accomplishments.length === 0 ?
+              '<p class="text-center text-slate-400 py-8">No accomplishments yet</p>' :
+              this.data.accomplishments.slice().reverse().map(item => `
+                <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-5 border border-white/10">
+                  <div class="text-3xl mb-3">${item.icon}</div>
+                  <div class="font-semibold mb-2">${item.type}</div>
+                  <p class="mb-2">${item.details}</p>
+                  <div class="text-sm text-slate-400">${new Date(item.timestamp).toLocaleString()}</div>
+                </div>
+              `).join('')
+            }
+          `;
+        } else if (currentTab === 'boundaries') {
+          content.innerHTML = `
+            <button onclick="app.openBoundary()" 
+              class="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold mb-4">
+              + Log Boundary
+            </button>
+            ${this.data.boundaries.length === 0 ?
+              '<p class="text-center text-slate-400 py-8">No boundaries logged yet</p>' :
+              this.data.boundaries.slice().reverse().map(item => `
+                <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-5 border border-white/10">
+                  <div class="text-3xl mb-3">🛡️</div>
+                  <div class="font-semibold mb-2">${item.description}</div>
+                  <p class="text-slate-300 mb-2">With: ${item.person}</p>
+                  <p class="mb-2">${item.outcome}</p>
+                  <div class="text-yellow-400 mb-2">${'⭐'.repeat(item.rating)}</div>
+                  <div class="text-sm text-slate-400">${new Date(item.timestamp).toLocaleString()}</div>
+                </div>
+              `).join('')
+            }
+          `;
+        } else if (currentTab === 'quotes') {
+          content.innerHTML = `
+            <button onclick="app.openQuote()" 
+              class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-semibold mb-4">
+              + Save Quote
+            </button>
+            ${this.data.quotes.length === 0 ?
+              '<p class="text-center text-slate-400 py-8">No quotes saved yet</p>' :
+              this.data.quotes.slice().reverse().map(item => `
+                <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-5 border border-white/10">
+                  <p class="text-lg italic mb-2">"${item.text}"</p>
+                  ${item.author ? `<p class="text-slate-400">— ${item.author}</p>` : ''}
+                  <div class="text-sm text-slate-400 mt-3">${new Date(item.timestamp).toLocaleString()}</div>
+                </div>
+              `).join('')
+            }
+          `;
+        }
+      },
+
+      switchLogTab(tab) {
+        document.querySelectorAll('.log-tab').forEach(btn => {
+          btn.classList.remove('bg-teal-600');
+          btn.classList.add('bg-white/10', 'hover:bg-white/20');
+        });
+        const activeBtn = document.querySelector(`[data-tab="${tab}"]`);
+        activeBtn.classList.add('bg-teal-600');
+        activeBtn.classList.remove('bg-white/10', 'hover:bg-white/20');
+        this.renderJournal();
+      },
+
+      showView(viewName) {
+        document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active', 'bg-white/20'));
+        
+        document.getElementById(`${viewName}-view`).classList.remove('hidden');
+        const navBtn = document.querySelector(`[data-view="${viewName}"]`);
+        if (navBtn) {
+          navBtn.classList.add('active', 'bg-white/20');
+        }
+        
+        this.render();
+      },
+
+      toggleHabit(habitId) {
+        const habit = this.data.habits.find(h => h.id === habitId);
+        if (!habit) return;
+        
+        habit.completed = !habit.completed;
+        if (habit.completed) habit.streak++;
+        
+        this.saveData();
+        this.render();
+      },
+
+      addHabit() {
+        const name = prompt('Enter habit name:');
+        if (!name) return;
+        
+        const icon = prompt('Enter emoji icon:', '✅') || '✅';
+        
+        this.data.habits.push({
+          id: Date.now(),
+          name: name,
+          icon: icon,
+          completed: false,
+          streak: 0
+        });
+        
+        this.saveData();
+        this.render();
+      },
+
+      openFeelingsWheel() {
+        const modal = document.getElementById('modal');
+        const title = document.getElementById('modal-title');
+        const body = document.getElementById('modal-body');
+        const footer = document.getElementById('modal-footer');
+
+        title.textContent = '💚 Feelings Check-In';
+        
+        body.innerHTML = `
+          <div id="feelings-step-1" class="space-y-4">
+            <h4 class="text-xl font-bold mb-4">How are you feeling?</h4>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+              ${Object.keys(this.feelingsWheel).map(feeling => `
+                <button onclick="app.selectPrimaryFeeling('${feeling}')" 
+                  class="p-4 rounded-xl border-2 border-white/20 hover:border-white/40 bg-white/5 hover:bg-white/10 transition-all">
+                  <div class="text-3xl mb-2">${this.getEmoji(feeling)}</div>
+                  <div class="font-semibold">${feeling}</div>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+          <div id="feelings-step-2" class="hidden space-y-4">
+            <h4 class="text-xl font-bold mb-2">More specifically...</h4>
+            <div id="subcategories-container" class="grid grid-cols-2 gap-3"></div>
+          </div>
+          <div id="feelings-step-3" class="hidden space-y-4">
+            <h4 class="text-xl font-bold mb-2">Any notes? (optional)</h4>
+            <textarea id="feelings-notes" rows="4" 
+              class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-slate-400 focus:border-teal-400 focus:outline-none"
+              placeholder="What's on your mind?"></textarea>
+          </div>
+        `;
+
+        footer.innerHTML = '';
+        
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      },
+
+      selectPrimaryFeeling(feeling) {
+        this.data.currentFeeling = feeling;
+        
+        document.getElementById('feelings-step-1').classList.add('hidden');
+        document.getElementById('feelings-step-2').classList.remove('hidden');
+        
+        const container = document.getElementById('subcategories-container');
+        const subs = this.feelingsWheel[feeling].subs;
+        
+        container.innerHTML = subs.map(sub => `
+          <button onclick="app.selectSubcategory('${sub}')" 
+            class="p-3 rounded-xl border-2 border-white/20 hover:border-white/40 bg-white/5 hover:bg-white/10 transition-all font-semibold">
+            ${sub}
+          </button>
+        `).join('');
+
+        document.getElementById('modal-footer').innerHTML = `
+          <button onclick="app.backToFeelings()" 
+            class="bg-white/10 hover:bg-white/20 text-white px-6 py-2 rounded-lg">Back</button>
+        `;
+      },
+
+      selectSubcategory(subcategory) {
+        this.data.currentSubcategory = subcategory;
+        
+        document.getElementById('feelings-step-2').classList.add('hidden');
+        document.getElementById('feelings-step-3').classList.remove('hidden');
+        
+        document.getElementById('modal-footer').innerHTML = `
+          <button onclick="app.saveFeelingsCheckIn()" 
+            class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-semibold">Save Check-In</button>
+        `;
+      },
+
+      backToFeelings() {
+        document.getElementById('feelings-step-2').classList.add('hidden');
+        document.getElementById('feelings-step-1').classList.remove('hidden');
+        document.getElementById('modal-footer').innerHTML = '';
+      },
+
+      saveFeelingsCheckIn() {
+        if (!this.data.currentFeeling) {
+          alert('Please select a feeling');
+          return;
+        }
+
+        const notes = document.getElementById('feelings-notes')?.value || '';
+
+        this.data.checkIns.push({
+          id: Date.now(),
+          timestamp: new Date().toISOString(),
+          feeling: this.data.currentFeeling,
+          subcategory: this.data.currentSubcategory,
+          notes: notes
+        });
+
+        this.data.currentFeeling = null;
+        this.data.currentSubcategory = null;
+
+        this.saveData();
+        this.closeModal();
+        this.render();
+        this.showToast('Check-in saved!');
+      },
+
+      openNewTopic() {
+        const modal = document.getElementById('modal');
+        const title = document.getElementById('modal-title');
+        const body = document.getElementById('modal-body');
+        const footer = document.getElementById('modal-footer');
+
+        title.textContent = '📝 New Topic';
+        
+        body.innerHTML = `
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold mb-2">What do you want to discuss?</label>
+              <input type="text" id="topic-title" 
+                class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-slate-400 focus:border-teal-400 focus:outline-none"
+                placeholder="e.g., Weekend plans">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-2">With (Person's Name)</label>
+              <input type="text" id="topic-with" 
+                class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-slate-400 focus:border-teal-400 focus:outline-none"
+                placeholder="e.g., Partner, Roommate">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-2">Category</label>
+              <div class="flex flex-wrap gap-2">
+                ${['#Household', '#Finances', '#Boundaries', '#Relationship', '#Schedule', '#MentalHealth'].map(tag => `
+                  <button onclick="app.toggleTag(this, '${tag}')" 
+                    class="topic-tag px-3 py-1 rounded-full bg-white/10 hover:bg-teal-600 border border-white/20 text-sm">
+                    ${tag}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-2">Notes (optional)</label>
+              <textarea id="topic-notes" rows="3" 
+                class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-slate-400 focus:border-teal-400 focus:outline-none"
+                placeholder="Key points you want to discuss..."></textarea>
+            </div>
+          </div>
+        `;
+
+        footer.innerHTML = `
+          <button onclick="app.saveTopic()" 
+            class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-semibold">Create Topic</button>
+        `;
+        
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      },
+
+      toggleTag(button, tag) {
+        button.classList.toggle('bg-teal-600');
+        button.classList.toggle('bg-white/10');
+      },
+
+      saveTopic() {
+        const title = document.getElementById('topic-title').value.trim();
+        const withPerson = document.getElementById('topic-with').value.trim();
+        const notes = document.getElementById('topic-notes').value.trim();
+        
+        if (!title || !withPerson) {
+          alert('Please fill in title and person name');
+          return;
+        }
+
+        const selectedTags = Array.from(document.querySelectorAll('.topic-tag.bg-teal-600')).map(btn => btn.textContent.trim());
+
+        this.data.topics.push({
+          id: Date.now(),
+          timestamp: new Date().toISOString(),
+          title: title,
+          with: withPerson,
+          tags: selectedTags,
+          notes: notes
+        });
+
+        this.saveData();
+        this.closeModal();
+        this.render();
+        this.showToast('Topic created!');
+      },
+
+      openAppreciation() {
+        const modal = document.getElementById('modal');
+        document.getElementById('modal-title').textContent = '⭐ Add Appreciation';
+        
+        document.getElementById('modal-body').innerHTML = `
+          <div class="space-y-4">
+            <textarea id="appreciation-text" rows="4" 
+              class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-slate-400 focus:border-teal-400 focus:outline-none"
+              placeholder="I appreciate..."></textarea>
+          </div>
+        `;
+
+        document.getElementById('modal-footer').innerHTML = `
+          <button onclick="app.saveAppreciation()" 
+            class="bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-lg font-semibold">Save</button>
+        `;
+        
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      },
+
+      saveAppreciation() {
+        const text = document.getElementById('appreciation-text').value.trim();
+        if (!text) {
+          alert('Please enter text');
+          return;
+        }
+
+        this.data.appreciations.push({
+          id: Date.now(),
+          timestamp: new Date().toISOString(),
+          text: text
+        });
+
+        this.saveData();
+        this.closeModal();
+        this.switchLogTab('appreciation');
+        this.showToast('Appreciation saved!');
+      },
+
+      openAccomplishment() {
+        const modal = document.getElementById('modal');
+        document.getElementById('modal-title').textContent = '🎉 Log Accomplishment';
+        
+        const types = [
+          { emoji: '💪', label: 'Gym/Exercise' },
+          { emoji: '🚶', label: 'Went for a walk' },
+          { emoji: '📞', label: 'Voice call' },
+          { emoji: '💬', label: 'Text conversation' },
+          { emoji: '🎯', label: 'Set a boundary' },
+          { emoji: '📚', label: 'Learned something' }
+        ];
+
+        document.getElementById('modal-body').innerHTML = `
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold mb-2">Type</label>
+              <div class="grid grid-cols-2 gap-2">
+                ${types.map(type => `
+                  <button onclick="app.selectAccomplishmentType(this, '${type.emoji}', '${type.label}')" 
+                    class="accomplishment-type p-3 rounded-xl border-2 border-white/20 hover:border-white/40 bg-white/5 hover:bg-white/10 transition-all text-left">
+                    <div class="text-2xl mb-1">${type.emoji}</div>
+                    <div class="text-sm font-semibold">${type.label}</div>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-2">Details</label>
+              <textarea id="accomplishment-details" rows="3" 
+                class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-slate-400 focus:border-teal-400 focus:outline-none"
+                placeholder="What did you accomplish?"></textarea>
+            </div>
+          </div>
+        `;
+
+        document.getElementById('modal-footer').innerHTML = `
+          <button onclick="app.saveAccomplishment()" 
+            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold">Save</button>
+        `;
+        
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      },
+
+      selectAccomplishmentType(button, icon, label) {
+        document.querySelectorAll('.accomplishment-type').forEach(btn => {
+          btn.classList.remove('border-teal-400', 'bg-teal-600/20');
+        });
+        button.classList.add('border-teal-400', 'bg-teal-600/20');
+        button.dataset.icon = icon;
+        button.dataset.label = label;
+      },
+
+      saveAccomplishment() {
+        const selected = document.querySelector('.accomplishment-type.border-teal-400');
+        if (!selected) {
+          alert('Please select a type');
+          return;
+        }
+
+        const details = document.getElementById('accomplishment-details').value.trim();
+        if (!details) {
+          alert('Please add details');
+          return;
+        }
+
+        this.data.accomplishments.push({
+          id: Date.now(),
+          timestamp: new Date().toISOString(),
+          icon: selected.dataset.icon,
+          type: selected.dataset.label,
+          details: details
+        });
+
+        this.saveData();
+        this.closeModal();
+        this.switchLogTab('accomplishments');
+        this.showToast('Accomplishment logged!');
+      },
+
+      openBoundary() {
+        const modal = document.getElementById('modal');
+        document.getElementById('modal-title').textContent = '🛡️ Log Boundary';
+        
+        document.getElementById('modal-body').innerHTML = `
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold mb-2">Boundary Description</label>
+              <input type="text" id="boundary-description" 
+                class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-slate-400 focus:border-teal-400 focus:outline-none"
+                placeholder="e.g., I said no to working late">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-2">With whom?</label>
+              <input type="text" id="boundary-person" 
+                class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-slate-400 focus:border-teal-400 focus:outline-none"
+                placeholder="Person or situation">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-2">Outcome</label>
+              <textarea id="boundary-outcome" rows="3" 
+                class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-slate-400 focus:border-teal-400 focus:outline-none"
+                placeholder="How did it go?"></textarea>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-2">Success Rating</label>
+              <div class="flex gap-2">
+                ${[1,2,3,4,5].map(i => `
+                  <button onclick="app.selectRating(${i})" 
+                    class="rating-btn w-12 h-12 rounded-lg border-2 border-white/20 hover:border-yellow-400 hover:bg-yellow-400/20 transition-all"
+                    data-rating="${i}">
+                    ⭐
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+
+        document.getElementById('modal-footer').innerHTML = `
+          <button onclick="app.saveBoundary()" 
+            class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold">Save</button>
+        `;
+        
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      },
+
+      selectRating(rating) {
+        document.querySelectorAll('.rating-btn').forEach((btn, idx) => {
+          if (idx < rating) {
+            btn.classList.add('border-yellow-400', 'bg-yellow-400/20');
+          } else {
+            btn.classList.remove('border-yellow-400', 'bg-yellow-400/20');
+          }
+        });
+      },
+
+      saveBoundary() {
+        const description = document.getElementById('boundary-description').value.trim();
+        const person = document.getElementById('boundary-person').value.trim();
+        const outcome = document.getElementById('boundary-outcome').value.trim();
+        const rating = document.querySelectorAll('.rating-btn.border-yellow-400').length;
+
+        if (!description || !person || !outcome || rating === 0) {
+          alert('Please fill all fields');
+          return;
+        }
+
+        this.data.boundaries.push({
+          id: Date.now(),
+          timestamp: new Date().toISOString(),
+          description, person, outcome, rating
+        });
+
+        this.saveData();
+        this.closeModal();
+        this.switchLogTab('boundaries');
+        this.showToast('Boundary logged!');
+      },
+
+      openQuote() {
+        const modal = document.getElementById('modal');
+        document.getElementById('modal-title').textContent = '💭 Save Quote';
+        
+        document.getElementById('modal-body').innerHTML = `
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold mb-2">Quote</label>
+              <textarea id="quote-text" rows="4" 
+                class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-slate-400 focus:border-teal-400 focus:outline-none"
+                placeholder="Enter inspiring quote..."></textarea>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-2">Author (optional)</label>
+              <input type="text" id="quote-author" 
+                class="w-full p-3 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-slate-400 focus:border-teal-400 focus:outline-none"
+                placeholder="e.g., Maya Angelou">
+            </div>
+          </div>
+        `;
+
+        document.getElementById('modal-footer').innerHTML = `
+          <button onclick="app.saveQuote()" 
+            class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-semibold">Save</button>
+        `;
+        
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      },
+
+      saveQuote() {
+        const text = document.getElementById('quote-text').value.trim();
+        if (!text) {
+          alert('Please enter quote text');
+          return;
+        }
+
+        const author = document.getElementById('quote-author').value.trim();
+
+        this.data.quotes.push({
+          id: Date.now(),
+          timestamp: new Date().toISOString(),
+          text: text,
+          author: author
+        });
+
+        this.saveData();
+        this.closeModal();
+        this.switchLogTab('quotes');
+        this.showToast('Quote saved!');
+      },
+
+      viewCondition(id) {
+        const condition = this.conditions.find(c => c.id === id);
+        if (!condition) return;
+
+        const modal = document.getElementById('modal');
+        document.getElementById('modal-title').textContent = `${condition.icon} ${condition.title}`;
+        
+        document.getElementById('modal-body').innerHTML = `
+          <div class="prose prose-invert max-w-none">
+            <p class="text-lg mb-4">${condition.desc}</p>
+            <p class="text-slate-300">Content coming soon...</p>
+          </div>
+        `;
+
+        document.getElementById('modal-footer').innerHTML = `
+          <button onclick="app.closeModal()" 
+            class="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-lg font-semibold">Close</button>
+        `;
+        
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      },
+
+      viewBlog(id) {
+        const blog = this.blogs.find(b => b.id === id);
+        if (!blog) return;
+
+        const modal = document.getElementById('modal');
+        document.getElementById('modal-title').textContent = blog.title;
+        
+        document.getElementById('modal-body').innerHTML = `
+          <div class="prose prose-invert max-w-none">
+            <p class="text-sm text-slate-400 mb-4">By ${blog.author} • ${blog.date}</p>
+            <p class="text-lg mb-4">${blog.excerpt}</p>
+            <p class="text-slate-300">Full article content coming soon...</p>
+          </div>
+        `;
+
+        document.getElementById('modal-footer').innerHTML = `
+          <button onclick="app.closeModal()" 
+            class="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-lg font-semibold">Close</button>
+        `;
+        
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      },
+
+      startProgram(id) {
+        const program = this.data.programs.find(p => p.id === id);
+        if (!program) return;
+
+        if (program.currentDay === 0) {
+          if (confirm(`Start "${program.title}"?`)) {
+            program.currentDay = 1;
+            this.saveData();
+            this.render();
+          }
+        } else {
+          alert(`Continue with Day ${program.currentDay}`);
+        }
+      },
+
+      calculateStreak() {
+        if (this.data.checkIns.length === 0) return 0;
+        
+        const sortedCheckIns = [...this.data.checkIns].sort((a, b) => 
+          new Date(b.timestamp) - new Date(a.timestamp)
+        );
+        
+        let streak = 0;
+        let currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
+        
+        for (let i = 0; i < 30; i++) {
+          const dateStr = currentDate.toDateString();
+          const hasCheckIn =
