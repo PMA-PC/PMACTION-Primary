@@ -12,7 +12,7 @@ import ActiveChallengeCard from '../components/ActiveChallengeCard';
 
 const DashboardPage = () => {
     const router = useRouter();
-    const { user, stats, dailyLogs, wins, userProfile, addWin } = useApp();
+    const { user, stats, dailyLogs, wins, userProfile, addWin, activeChallenge } = useApp();
     const [isWinModalOpen, setIsWinModalOpen] = useState(false);
     const [isLevelUpModalOpen, setIsLevelUpModalOpen] = useState(false);
     const [isSelfCareHubOpen, setIsSelfCareHubOpen] = useState(false);
@@ -270,13 +270,9 @@ const DashboardPage = () => {
                             }}
                         />
 
-                        {/* Active Challenge Card (Mocked with Physiology First) */}
+                        {/* Active Challenge Card */}
                         <ActiveChallengeCard
-                            challenge={{
-                                title: 'Physiology First',
-                                duration: 5,
-                                id: 'physiology_first'
-                            }}
+                            challenge={activeChallenge}
                         />
                     </div>
                 </div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
+import { CHALLENGES } from '../lib/challengesData';
 
 const ActiveChallengeCard = ({ challenge }) => {
     const router = useRouter();
@@ -20,10 +21,21 @@ const ActiveChallengeCard = ({ challenge }) => {
         );
     }
 
-    // Mock progress for now
-    const progress = 20; // 20%
-    const currentDay = 1;
-    const totalDays = challenge.duration;
+    // Find full challenge details
+    const challengeDetails = CHALLENGES.find(c => c.id === challenge.id);
+    if (!challengeDetails) return null;
+
+    // Calculate progress
+    const startDate = new Date(challenge.startDate);
+    const today = new Date();
+    const diffTime = Math.abs(today - startDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const currentDay = Math.min(Math.max(diffDays, 1), challengeDetails.duration);
+    const totalDays = challengeDetails.duration;
+    const progress = Math.round((currentDay / totalDays) * 100);
+
+    // Get today's task
+    const currentTask = challengeDetails.tasks[currentDay] || { title: 'Rest Day', description: 'Take a break and reflect.' };
 
     return (
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -31,7 +43,7 @@ const ActiveChallengeCard = ({ challenge }) => {
                 <div className="flex justify-between items-start">
                     <div>
                         <span className="text-xs font-bold uppercase tracking-wide opacity-80">Current Challenge</span>
-                        <h3 className="text-lg font-bold mt-1">{challenge.title}</h3>
+                        <h3 className="text-lg font-bold mt-1">{challengeDetails.title}</h3>
                     </div>
                     <span className="bg-white/20 px-2 py-1 rounded text-xs font-bold">
                         Day {currentDay}/{totalDays}
@@ -59,13 +71,13 @@ const ActiveChallengeCard = ({ challenge }) => {
                     </div>
                     <div>
                         <p className="text-xs text-gray-500 font-bold uppercase">Today's Task</p>
-                        <p className="text-sm font-bold text-gray-800">Sleep Audit</p>
+                        <p className="text-sm font-bold text-gray-800">{currentTask.title}</p>
                     </div>
                 </div>
 
                 <button
                     className="w-full py-2 bg-gray-900 text-white font-bold rounded-xl hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
-                    onClick={() => alert('Opening today\'s task...')}
+                    onClick={() => alert(`Task: ${currentTask.description}`)}
                 >
                     <span>Start Task</span>
                     <span>→</span>
