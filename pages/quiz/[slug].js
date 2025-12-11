@@ -227,11 +227,21 @@ export default function QuizPage() {
             <div className="min-h-screen bg-gray-50 py-12 px-4 text-center">
                 <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-8">
                     <h2 className="text-3xl font-bold text-indigo-600 mb-4">Assessment Complete</h2>
-                    <p className="text-gray-600 mb-8">Score: {result.score}</p>
+                    <p className="text-gray-600 mb-8">Score: {result?.score || 0}</p>
                     <button onClick={() => router.push('/assessments')} className="bg-gray-900 text-white px-6 py-2 rounded-lg">Back to Dashboard</button>
                 </div>
             </div>
         )
+    }
+
+    if (!assessment) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center p-4">
+                <h1 className="text-2xl font-bold text-red-600 mb-4">Quiz Not Found</h1>
+                <p className="text-gray-600 mb-4">Could not load assessment data. It might not exist or there was a connection error.</p>
+                <button onClick={() => router.push('/')} className="px-4 py-2 bg-indigo-600 text-white rounded">Go Home</button>
+            </div>
+        );
     }
 
     // HUB VIEW
