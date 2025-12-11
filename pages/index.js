@@ -1,18 +1,8 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import PMASlotMachine from '../components/PMASlotMachine';
-
 // Define the Home component
 const Home = () => {
-  const [showWinnerMessage, setShowWinnerMessage] = useState(false);
-  const [pulseButton, setPulseButton] = useState(false);
-
-  const handleJackpotComplete = () => {
-    setShowWinnerMessage(true);
-    setPulseButton(true);
-  };
-
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-teal-50 via-white to-purple-50 p-4">
       <main className="text-center p-8 md:p-12 bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl max-w-4xl w-full border border-white/50">
@@ -44,35 +34,10 @@ const Home = () => {
           </motion.p>
         </div>
 
-        <div className="py-8">
-          <PMASlotMachine onJackpotComplete={handleJackpotComplete} />
-        </div>
-
-        {/* Winner's Win message - appears after jackpot */}
-        {showWinnerMessage && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{
-              opacity: 1,
-              scale: [0.8, 1.1, 1, 1.1, 1]
-            }}
-            transition={{
-              duration: 2,
-              times: [0, 0.25, 0.5, 0.75, 1]
-            }}
-            className="my-8"
-          >
-            <h3 className="text-3xl md:text-4xl font-black text-pink-600 mb-2">
-              WINNER'S WIN!
-            </h3>
-            <p className="text-purple-600 font-bold text-lg">You're ready to start.</p>
-          </motion.div>
-        )}
-
         <div className="flex justify-center mt-8 mb-12">
           <Link
             href="/onboarding/goals"
-            className={`px-10 py-5 bg-gradient-to-r from-pink-500 to-purple-600 text-white text-2xl font-black rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 animate-pulse ${pulseButton ? 'ring-4 ring-pink-300' : ''}`}
+            className="px-10 py-5 bg-gradient-to-r from-pink-500 to-purple-600 text-white text-2xl font-black rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 animate-pulse"
           >
             Start Your Journey ➜
           </Link>
