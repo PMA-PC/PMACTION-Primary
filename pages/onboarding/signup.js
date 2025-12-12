@@ -64,7 +64,9 @@ const SignupPage = () => {
             const { data: authData, error: authError } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: `${window.location.origin}/auth/callback`,
+                    redirectTo: process.env.NODE_ENV === 'production'
+                        ? 'https://pmaction.com/auth/callback'
+                        : `${window.location.origin}/auth/callback`,
                     scopes: 'https://www.googleapis.com/auth/youtube.readonly'
                 },
             });

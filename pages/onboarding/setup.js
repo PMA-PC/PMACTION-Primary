@@ -23,6 +23,8 @@ const SetupPage = () => {
         }
     });
 
+    const [newHabit, setNewHabit] = useState('');
+
     const updateNotification = (key, value) => {
         setNotifications(prev => ({ ...prev, [key]: value }));
     };
@@ -32,6 +34,24 @@ const SetupPage = () => {
             ...prev,
             habitTracking: { ...prev.habitTracking, [habit]: value }
         }));
+    };
+
+    const handleAddHabit = (e) => {
+        e.preventDefault();
+        if (newHabit.trim()) {
+            // Create a key-friendly version of the habit name
+            const habitKey = newHabit.toLowerCase().replace(/[^a-z0-9]/g, '_');
+            // If checking existence in future, use Object.keys(notifications.habitTracking)
+
+            setNotifications(prev => ({
+                ...prev,
+                habitTracking: {
+                    ...prev.habitTracking,
+                    [newHabit]: true // Use full text as key for simplicity in display
+                }
+            }));
+            setNewHabit('');
+        }
     };
 
     const handleContinue = () => {
@@ -185,7 +205,7 @@ const SetupPage = () => {
                             {/* Habit Tracking Notifications */}
                             <div className="pt-4 border-t-2 border-gray-100">
                                 <h3 className="font-bold text-gray-900 mb-4">Habit Tracking Reminders</h3>
-                                <div className="space-y-3">
+                                <div className="space-y-3 mb-4">
                                     {Object.entries(notifications.habitTracking).map(([habit, enabled]) => (
                                         <div key={habit} className="flex items-center justify-between">
                                             <label htmlFor={`habit-${habit}`} className="text-gray-700 capitalize">
@@ -204,79 +224,98 @@ const SetupPage = () => {
                                         </div>
                                     ))}
                                 </div>
+                                {/* Add Custom Habit */}
+                                <div className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        placeholder="Add custom habit (e.g., Read 5 mins)..."
+                                        value={newHabit}
+                                        onChange={(e) => setNewHabit(e.target.value)}
+                                        onKeyPress={(e) => e.key === 'Enter' && handleAddHabit(e)}
+                                        className="flex-1 px-4 py-2 text-sm border-2 border-gray-200 rounded-lg focus:outline-none focus:border-teal-500"
+                                    />
+                                    <button
+                                        onClick={handleAddHabit}
+                                        type="button"
+                                        className="px-4 py-2 bg-teal-600 text-white text-sm font-bold rounded-lg hover:bg-teal-700 transition-colors"
+                                    >
+                                        Add
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </motion.div>
 
                     {/* Right Column: Gamification */}
                     <motion.div
-                        className="bg-gradient-to-br from-purple-600 to-teal-600 rounded-3xl shadow-xl p-6 text-white"
+                        className="bg-gradient-to-br from-purple-600 to-teal-600 rounded-3xl shadow-xl p-6 text-white h-full flex flex-col justify-between"
                         initial={{ opacity: 0, x: 50 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.5, delay: 0.5 }}
                     >
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                                </svg>
-                            </div>
-                            <h2 className="text-xl font-bold">Gamification Features</h2>
-                        </div>
-
-                        <p className="mb-6 text-purple-100 text-sm">
-                            Make your mental wellness journey fun and rewarding!
-                        </p>
-
-                        {/* 2x2 Grid of Features */}
-                        <div className="grid grid-cols-2 gap-3">
-                            {/* Badges */}
-                            <div className="bg-white bg-opacity-25 rounded-xl p-3 backdrop-blur-sm">
-                                <div className="flex flex-col items-center text-center gap-2">
-                                    <span className="text-2xl">🏆</span>
-                                    <h3 className="font-bold text-sm text-gray-900">Badges</h3>
-                                    <p className="text-xs text-gray-700">
-                                        Unlock achievements
+                        <div>
+                            <div className="flex flex-col items-center gap-2 mb-6 text-center">
+                                <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                                    <span className="text-3xl">🎮</span>
+                                </div>
+                                <div>
+                                    <h2 className="text-2xl font-bold">Gamification Features</h2>
+                                    <p className="text-purple-100 text-sm mt-1">
+                                        Make your mental wellness journey fun and rewarding!
                                     </p>
                                 </div>
                             </div>
 
-                            {/* Streaks */}
-                            <div className="bg-white bg-opacity-25 rounded-xl p-3 backdrop-blur-sm">
-                                <div className="flex flex-col items-center text-center gap-2">
-                                    <span className="text-2xl">🔥</span>
-                                    <h3 className="font-bold text-sm text-gray-900">Streaks</h3>
-                                    <p className="text-xs text-gray-700">
-                                        Build momentum
-                                    </p>
+                            {/* 2x2 Grid of Features */}
+                            <div className="grid grid-cols-2 gap-3 mb-6">
+                                {/* Badges */}
+                                <div className="bg-white bg-opacity-25 rounded-xl p-3 backdrop-blur-sm">
+                                    <div className="flex flex-col items-center text-center gap-2">
+                                        <span className="text-2xl">🏆</span>
+                                        <h3 className="font-bold text-sm text-gray-900">Badges</h3>
+                                        <p className="text-xs text-gray-700">
+                                            Unlock achievements
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
 
-                            {/* Points */}
-                            <div className="bg-white bg-opacity-25 rounded-xl p-3 backdrop-blur-sm">
-                                <div className="flex flex-col items-center text-center gap-2">
-                                    <span className="text-2xl">⭐</span>
-                                    <h3 className="font-bold text-sm text-gray-900">Points</h3>
-                                    <p className="text-xs text-gray-700">
-                                        Earn rewards
-                                    </p>
+                                {/* Streaks */}
+                                <div className="bg-white bg-opacity-25 rounded-xl p-3 backdrop-blur-sm">
+                                    <div className="flex flex-col items-center text-center gap-2">
+                                        <span className="text-2xl">🔥</span>
+                                        <h3 className="font-bold text-sm text-gray-900">Streaks</h3>
+                                        <p className="text-xs text-gray-700">
+                                            Build momentum
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
 
-                            {/* Levels */}
-                            <div className="bg-white bg-opacity-25 rounded-xl p-3 backdrop-blur-sm">
-                                <div className="flex flex-col items-center text-center gap-2">
-                                    <span className="text-2xl">👑</span>
-                                    <h3 className="font-bold text-sm text-gray-900">Levels</h3>
-                                    <p className="text-xs text-gray-700">
-                                        Progress & grow
-                                    </p>
+                                {/* Points */}
+                                <div className="bg-white bg-opacity-25 rounded-xl p-3 backdrop-blur-sm">
+                                    <div className="flex flex-col items-center text-center gap-2">
+                                        <span className="text-2xl">⭐</span>
+                                        <h3 className="font-bold text-sm text-gray-900">Points</h3>
+                                        <p className="text-xs text-gray-700">
+                                            Earn rewards
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Levels */}
+                                <div className="bg-white bg-opacity-25 rounded-xl p-3 backdrop-blur-sm">
+                                    <div className="flex flex-col items-center text-center gap-2">
+                                        <span className="text-2xl">👑</span>
+                                        <h3 className="font-bold text-sm text-gray-900">Levels</h3>
+                                        <p className="text-xs text-gray-700">
+                                            Progress & grow
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         {/* Why Daily Use Matters - Card Format */}
-                        <div className="mt-6 pt-6 border-t border-white border-opacity-20">
+                        <div className="mt-4 pt-6 border-t border-white border-opacity-20">
                             <h3 className="text-lg font-bold mb-4 text-center text-white">Why Daily Use Matters</h3>
                             <div className="grid grid-cols-2 gap-3">
                                 {/* Consistency Card */}
@@ -318,16 +357,16 @@ const SetupPage = () => {
                                     </div>
                                 </div>
 
-                                {/* See Results Card */}
+                                {/* Community Impact Card (Fills Dead Space) */}
                                 <div className="bg-white bg-opacity-25 rounded-xl p-3 backdrop-blur-sm">
                                     <div className="flex flex-col items-center text-center gap-2">
                                         <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
                                             <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                                             </svg>
                                         </div>
-                                        <h4 className="font-bold text-sm text-gray-900">See Results</h4>
-                                        <p className="text-xs text-gray-700">Progress compounds</p>
+                                        <h4 className="font-bold text-sm text-gray-900">Community</h4>
+                                        <p className="text-xs text-gray-700">Join 10k+ others</p>
                                     </div>
                                 </div>
                             </div>
