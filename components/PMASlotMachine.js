@@ -39,7 +39,7 @@ const SlotWheel = ({ words, finalWord, delay, onComplete, columnIndex }) => {
                 key={isSpinning ? currentIndex : 'final'}
                 initial={{ y: 25, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                className={`text-xl md:text-2xl font-bold truncate ${isSpinning ? 'text-gray-400 blur-[1px]' : 'text-indigo-600'}`}
+                className={`text-2xl md:text-4xl font-bold truncate ${isSpinning ? 'text-gray-400 blur-[1px]' : 'text-indigo-600'}`}
             >
                 {words[currentIndex]}
             </motion.div>
@@ -64,9 +64,9 @@ export default function PMASlotMachine({ onJackpotComplete }) {
     };
 
     return (
-        <div className="flex justify-center my-8 scale-90 md:scale-100">
+        <div className="flex justify-center my-2 w-full">
             {/* Main Machine Body - Pink to Blue Theme */}
-            <div className="relative bg-gradient-to-br from-pink-500 via-purple-500 to-blue-600 rounded-[2.5rem] p-4 shadow-[0_10px_0px_rgb(76,29,149)] border-4 border-purple-700 w-full max-w-5xl transition-all duration-500">
+            <div className="relative bg-gradient-to-br from-pink-500 via-purple-500 to-blue-600 rounded-[2rem] p-3 shadow-[0_8px_0px_rgb(76,29,149)] border-4 border-purple-700 w-full transition-all duration-500">
 
                 {/* Top Decoration */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-6 bg-purple-700 rounded-b-xl opacity-20"></div>

@@ -31,7 +31,7 @@ const Home = () => {
       </Head>
       <main className="text-center p-6 md:p-10 bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl max-w-4xl w-full border border-white/50">
         {/* Main heading */}
-        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 mb-4 leading-tight drop-shadow-sm">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-green-600 mb-2 leading-tight drop-shadow-sm">
           Welcome to PMAction.com
           <span className="block text-2xl md:text-3xl mt-2 font-bold text-gray-600">
             Your personalized journey to <span className="text-green-600 font-black">Positive Mental</span> Wellness.
@@ -39,7 +39,7 @@ const Home = () => {
         </h1>
 
         {/* Slot Machine */}
-        <div className="mb-8 transform hover:scale-[1.01] transition-transform duration-500">
+        <div className="mb-4 transform hover:scale-[1.01] transition-transform duration-500">
           <PMASlotMachine onJackpotComplete={handleJackpotComplete} />
 
           {showWinnerMessage && (
@@ -53,7 +53,7 @@ const Home = () => {
           )}
         </div>
 
-        <div className="flex justify-center mt-6 mb-10">
+        <div className="flex justify-center mt-4 mb-6">
           <Link
             href="/onboarding/goals"
             className="px-10 py-5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-2xl font-black rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 animate-pulse"
@@ -62,7 +62,7 @@ const Home = () => {
           </Link>
         </div>
 
-        <div className="border-t border-gray-100 pt-6 mt-6">
+        <div className="border-t border-gray-100 pt-4 mt-4">
           <p className="text-gray-600 text-lg mb-2 font-medium max-w-2xl mx-auto leading-relaxed">
             Your trusted source to help you build a happy life :)
           </p>
