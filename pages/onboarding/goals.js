@@ -127,6 +127,14 @@ const GoalsPage = () => {
                         What Brings You Here?
                     </motion.h1>
                     <motion.p
+                        className="text-2xl font-bold text-teal-600 italic mb-6"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5, delay: 0.1 }}
+                    >
+                        "Own Your Perfect Imperfections"
+                    </motion.p>
+                    <motion.p
                         className="text-xl text-gray-600 max-w-2xl mx-auto"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
