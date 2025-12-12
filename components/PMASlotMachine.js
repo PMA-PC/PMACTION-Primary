@@ -80,7 +80,7 @@ export default function PMASlotMachine({ onJackpotComplete }) {
                     {/* Top Display - Main Message */}
                     <div className="mb-4 text-center relative z-10 bg-black/40 rounded-lg py-2 border border-white/10 backdrop-blur-sm">
                         <h2 className="text-lg md:text-2xl font-bold text-white tracking-wide font-sans drop-shadow-md">
-                            Don't leave your mental health to chance
+                            Don't leave your mental health to chance, micro changes have lasting impacts.
                         </h2>
                     </div>
 

@@ -44,64 +44,7 @@ body {
 /* Add any other global styles here */
 
 /* Styles for Landing Page (moved from inline styles in index.js) */
-.app-container {
-  padding: 16px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
 
-.no-padding {
-  padding: 0;
-}
-
-.landing-hero {
-  text-align: center;
-  padding: 24px;
-  background: linear-gradient(135deg, #14B8A6, #0d9488);
-  /* Example from design system */
-  color: white;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.landing-cta {
-  margin: 24px 0;
-}
-
-.btn {
-  padding: 12px 24px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  /* --font-weight-medium: 500; */
-  text-decoration: none;
-  display: inline-block;
-}
-
-.btn-white {
-  background-color: white;
-  color: #14B8A6;
-  /* var(--color-primary); */
-}
-
-.btn-lg {
-  padding: 16px 32px;
-  font-size: 1.2em;
-}
-
-.mb-12 {
-  margin-bottom: 12px;
-  /* --space-12: 12px; */
-}
-
-.mb-24 {
-  margin-bottom: 24px;
-  /* --space-24: 24px; */
-}
 
 /* Slot Machine Marquee Shimmer Animation */
 @keyframes shimmer {

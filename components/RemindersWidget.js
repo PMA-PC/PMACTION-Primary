@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 export default function RemindersWidget() {
     const [reminders, setReminders] = useState([]);
     const [newReminder, setNewReminder] = useState('');
+    const [reminderTime, setReminderTime] = useState('');
     const [isDaily, setIsDaily] = useState(false);
 
     // Load from local storage on mount
@@ -25,6 +26,7 @@ export default function RemindersWidget() {
         const reminder = {
             id: Date.now(),
             text: newReminder.trim(),
+            time: reminderTime,
             isDaily: isDaily,
             completed: false,
             lastCompletedDate: null
@@ -32,6 +34,7 @@ export default function RemindersWidget() {
 
         setReminders([...reminders, reminder]);
         setNewReminder('');
+        setReminderTime('');
         setIsDaily(false);
     };
 
@@ -76,33 +79,43 @@ export default function RemindersWidget() {
             </div>
 
             <form onSubmit={addReminder} className="mb-4">
-                <div className="flex gap-2">
-                    <input
-                        type="text"
-                        value={newReminder}
-                        onChange={(e) => setNewReminder(e.target.value)}
-                        placeholder="Add a task..."
-                        className="flex-1 p-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-                    />
-                    <button
-                        type="submit"
-                        disabled={!newReminder.trim()}
-                        className="bg-blue-600 text-white px-3 rounded-lg font-bold hover:bg-blue-700 disabled:opacity-50"
-                    >
-                        +
-                    </button>
-                </div>
-                <div className="flex items-center gap-2 mt-2">
-                    <input
-                        type="checkbox"
-                        id="isDaily"
-                        checked={isDaily}
-                        onChange={(e) => setIsDaily(e.target.checked)}
-                        className="rounded text-blue-600 focus:ring-blue-500"
-                    />
-                    <label htmlFor="isDaily" className="text-xs text-gray-500 cursor-pointer select-none">
-                        Repeat Daily
-                    </label>
+                <div className="flex flex-col gap-2">
+                    <div className="flex gap-2">
+                        <input
+                            type="text"
+                            value={newReminder}
+                            onChange={(e) => setNewReminder(e.target.value)}
+                            placeholder="Add a task..."
+                            className="flex-1 p-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                        />
+                        <button
+                            type="submit"
+                            disabled={!newReminder.trim()}
+                            className="bg-blue-600 text-white px-3 rounded-lg font-bold hover:bg-blue-700 disabled:opacity-50"
+                        >
+                            +
+                        </button>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <input
+                            type="time"
+                            value={reminderTime}
+                            onChange={(e) => setReminderTime(e.target.value)}
+                            className="p-1 px-2 border border-gray-200 rounded-lg text-xs bg-gray-50 text-gray-600 focus:outline-none focus:border-blue-500"
+                        />
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="checkbox"
+                                id="isDaily"
+                                checked={isDaily}
+                                onChange={(e) => setIsDaily(e.target.checked)}
+                                className="rounded text-blue-600 focus:ring-blue-500"
+                            />
+                            <label htmlFor="isDaily" className="text-xs text-gray-500 cursor-pointer select-none">
+                                Repeat Daily
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </form>
 
@@ -114,24 +127,31 @@ export default function RemindersWidget() {
                         <div
                             key={reminder.id}
                             className={`group flex items-center justify-between p-3 rounded-xl border transition-all ${reminder.completed
-                                    ? 'bg-gray-50 border-gray-100'
-                                    : 'bg-white border-gray-100 hover:border-blue-200 hover:shadow-sm'
+                                ? 'bg-gray-50 border-gray-100'
+                                : 'bg-white border-gray-100 hover:border-blue-200 hover:shadow-sm'
                                 }`}
                         >
                             <div className="flex items-center gap-3 flex-1 min-w-0">
                                 <button
                                     onClick={() => toggleReminder(reminder.id)}
                                     className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${reminder.completed
-                                            ? 'bg-green-500 border-green-500 text-white'
-                                            : 'border-gray-300 hover:border-blue-400'
+                                        ? 'bg-green-500 border-green-500 text-white'
+                                        : 'border-gray-300 hover:border-blue-400'
                                         }`}
                                 >
                                     {reminder.completed && <span className="text-xs">✓</span>}
                                 </button>
                                 <div className="flex flex-col min-w-0">
-                                    <span className={`text-sm truncate ${reminder.completed ? 'text-gray-400 line-through' : 'text-gray-700 font-medium'}`}>
-                                        {reminder.text}
-                                    </span>
+                                    <div className="flex items-center gap-2">
+                                        <span className={`text-sm truncate ${reminder.completed ? 'text-gray-400 line-through' : 'text-gray-700 font-medium'}`}>
+                                            {reminder.text}
+                                        </span>
+                                        {reminder.time && (
+                                            <span className={`text-xs px-1.5 py-0.5 rounded ${reminder.completed ? 'bg-gray-100 text-gray-400' : 'bg-blue-50 text-blue-600 font-medium'}`}>
+                                                @{reminder.time}
+                                            </span>
+                                        )}
+                                    </div>
                                     {reminder.isDaily && (
                                         <span className="text-[10px] text-blue-500 font-bold uppercase tracking-wider">
                                             Daily

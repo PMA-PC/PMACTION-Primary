@@ -47,6 +47,10 @@ const SettingsModal = ({ onClose }) => {
                     </select>
                 </div>
                 <div className="mb-4">
+                    <a href="/profile/details" className="text-sm text-green-600 font-medium hover:underline flex items-center gap-1 mb-2">
+                        user_circle_icon
+                        Manage Detailed Profile
+                    </a>
                     <label className="inline-flex items-center cursor-pointer">
                         <input
                             type="checkbox"
