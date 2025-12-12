@@ -2,9 +2,23 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 // Define the Home component
+import Head from 'next/head';
+
 const Home = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-green-50 via-white to-teal-50 p-4">
+      <Head>
+        <title>PMAction | Positive Mental Action & Neurodiversity Tools</title>
+        <meta name="description" content="Your personalized journey to Positive Mental Wellness. Neurodiversity-friendly habit tracking, mood logging, and tools for ADHD/Autism." />
+        <meta name="keywords" content="positive mental attitude, neurodiversity, habit tracker, ADHD tools, mood log, self-care app" />
+        <meta property="og:title" content="PMAction | Positive Mental Action & Neurodiversity Tools" />
+        <meta property="og:description" content="Your personalized journey to Positive Mental Wellness. Be Awesome @ Today with our neuro-inclusive tools." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://pmaction.com" />
+        <meta property="og:image" content="https://pmaction.com/og-image-home.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <main className="text-center p-6 md:p-10 bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl max-w-4xl w-full border border-white/50">
         {/* Main heading */}
         <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 mb-4 leading-tight drop-shadow-sm">

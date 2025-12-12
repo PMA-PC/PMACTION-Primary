@@ -11,6 +11,10 @@ export default function QuizPage() {
 
     const [assessment, setAssessment] = useState(null);
     const [questions, setQuestions] = useState([]);
+
+    // SEO Helpers
+    const pageTitle = assessment ? `${assessment.name} | PMAction Quiz` : 'Neurodiversity Quiz | PMAction';
+    const pageDesc = assessment ? assessment.description : 'Take our neurodiversity-affirming assessments to understand your traits and habits.';
     const [groupedQuestions, setGroupedQuestions] = useState({});
     const [sections, setSections] = useState([]);
 
@@ -220,7 +224,24 @@ export default function QuizPage() {
 
     // --- RENDER ---
 
-    if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div></div>;
+    const HeadSEO = () => (
+        <Head>
+            <title>{pageTitle}</title>
+            <meta name="description" content={pageDesc} />
+            <meta property="og:title" content={pageTitle} />
+            <meta property="og:description" content={pageDesc} />
+            <meta property="og:type" content="website" />
+            <meta property="og:image" content="https://pmaction.com/og-quiz-default.png" />
+            <meta name="twitter:card" content="summary_large_image" />
+        </Head>
+    );
+
+    if (loading) return (
+        <>
+            <HeadSEO />
+            <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div></div>
+        </>
+    );
 
     if (view === 'results') {
         return (
