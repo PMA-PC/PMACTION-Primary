@@ -64,7 +64,6 @@ export default function PMASlotMachine({ onJackpotComplete }) {
     };
 
     return (
-    return (
         <div className="flex justify-center my-2 w-full">
             {/* Main Machine Body - Pink to Blue Theme */}
             <div className="relative bg-gradient-to-br from-pink-500 via-purple-500 to-blue-600 rounded-[1.5rem] p-2 shadow-[0_6px_0px_rgb(76,29,149)] border border-purple-700 w-full max-w-4xl transition-all duration-500">
@@ -78,10 +77,10 @@ export default function PMASlotMachine({ onJackpotComplete }) {
                     {/* Screen Glare */}
                     <div className="absolute top-0 right-0 w-48 h-48 bg-white opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
 
-                    {/* Integrated Title */}
-                    <div className="mb-4 text-center relative z-10 bg-black/40 rounded-lg py-1 border border-white/10 backdrop-blur-sm">
-                        <h2 className="text-xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-300 to-blue-400 tracking-widest animate-pulse font-mono" style={{ textShadow: '0 0 15px rgba(168,85,247,0.5)' }}>
-                            BE AWESOME @ TODAY
+                    {/* Top Display - Main Message */}
+                    <div className="mb-4 text-center relative z-10 bg-black/40 rounded-lg py-2 border border-white/10 backdrop-blur-sm">
+                        <h2 className="text-lg md:text-2xl font-bold text-white tracking-wide font-sans drop-shadow-md">
+                            Don't leave your mental health to chance
                         </h2>
                     </div>
 
@@ -92,11 +91,25 @@ export default function PMASlotMachine({ onJackpotComplete }) {
                         <SlotWheel key={`a-${key}`} words={aWords} finalWord="Action" delay={4500} onComplete={handleComplete} />
                     </div>
 
-                    {/* Jackpot Lights */}
-                    <div className="flex justify-between mt-3 px-6">
-                        {[...Array(7)].map((_, i) => (
-                            <div key={i} className={`w-3 h-3 rounded-full ${jackpot ? 'bg-blue-300 animate-ping' : 'bg-red-900'}`}></div>
-                        ))}
+                    {/* Bottom Marquee - Be Awesome @ Today with Flashing Bulbs */}
+                    <div className="mt-4 bg-black/60 rounded-full py-2 px-6 border border-purple-500/30 flex items-center justify-center gap-3 shadow-[0_0_10px_rgba(168,85,247,0.2)]">
+                        {/* Left Bulbs */}
+                        <div className="flex gap-1">
+                            {[...Array(3)].map((_, i) => (
+                                <div key={`l-${i}`} className={`w-2 h-2 rounded-full ${jackpot ? 'bg-yellow-300 animate-ping' : 'bg-green-500 animate-pulse'}`} style={{ animationDelay: `${i * 100}ms` }}></div>
+                            ))}
+                        </div>
+
+                        <h3 className="text-xl md:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-300 to-blue-400 tracking-widest uppercase font-mono whitespace-nowrap">
+                            BE AWESOME @ TODAY
+                        </h3>
+
+                        {/* Right Bulbs */}
+                        <div className="flex gap-1">
+                            {[...Array(3)].map((_, i) => (
+                                <div key={`r-${i}`} className={`w-2 h-2 rounded-full ${jackpot ? 'bg-yellow-300 animate-ping' : 'bg-green-500 animate-pulse'}`} style={{ animationDelay: `${i * 100}ms` }}></div>
+                            ))}
+                        </div>
                     </div>
                 </div>
 
