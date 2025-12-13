@@ -53,15 +53,15 @@ export default function PMASlotMachine({ onJackpotComplete }) {
     const [key, setKey] = useState(0);
 
     const handleComplete = () => {
-        setCompletedCols(prev => {
-            const newCount = prev + 1;
-            if (newCount === 3) {
-                setTimeout(() => setJackpot(true), 100);
-                if (onJackpotComplete) onJackpotComplete();
-            }
-            return newCount;
-        });
+        setCompletedCols(prev => prev + 1);
     };
+
+    useEffect(() => {
+        if (completedCols === 3) {
+            setTimeout(() => setJackpot(true), 100);
+            if (onJackpotComplete) onJackpotComplete();
+        }
+    }, [completedCols, onJackpotComplete]);
 
     return (
         <div className="flex justify-center my-2 w-full">
