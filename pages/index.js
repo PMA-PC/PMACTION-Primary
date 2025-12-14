@@ -87,7 +87,10 @@ const Home = () => {
                   >
                     Start Your Free Journey
                   </Link>
-                  <button className="px-8 py-4 bg-white text-gray-700 border border-gray-200 text-lg font-bold rounded-full hover:bg-gray-50 hover:border-gray-300 transition-all duration-300">
+                  <button
+                    onClick={() => router.push('/mission')}
+                    className="px-8 py-4 bg-white text-gray-700 border border-gray-200 text-lg font-bold rounded-full hover:bg-gray-50 hover:border-gray-300 transition-all duration-300"
+                  >
                     Learn More
                   </button>
                 </div>
@@ -138,7 +141,7 @@ const Home = () => {
       </div>
 
       {/* --- Features Grid --- */}
-      <section className="py-24 bg-gray-50/50">
+      <section id="features" className="py-24 bg-gray-50/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl mb-4">

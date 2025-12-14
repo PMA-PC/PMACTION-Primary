@@ -101,7 +101,7 @@ export default function RemindersWidget() {
                             type="time"
                             value={reminderTime}
                             onChange={(e) => setReminderTime(e.target.value)}
-                            className="p-1 px-2 border border-gray-200 rounded-lg text-xs bg-gray-50 text-gray-600 focus:outline-none focus:border-blue-500"
+                            className="p-1 px-2 border border-gray-200 rounded-lg text-xs bg-gray-50 text-gray-700 font-medium focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                         />
                         <div className="flex items-center gap-2">
                             <input

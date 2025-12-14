@@ -41,7 +41,35 @@ body {
   --shadow-lg: 0 20px 60px rgba(0,0,0,0.3);
 }
 
-/* Add any other global styles here */
+/* 2026 Liquid Glass Design System */
+  :root {
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.5);
+    --glass-shadow: rgba(31, 38, 135, 0.1);
+    --mesh-1: hsla(250, 100%, 85%, 0.8);
+    --mesh-2: hsla(300, 100%, 90%, 0.8);
+    --mesh-3: hsla(180, 100%, 85%, 0.8);
+  }
+
+  /* Utility Classes */
+  .glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px 0 var(--glass-shadow);
+  }
+
+  .mesh-gradient-bg {
+    background-color: #f3f4f6;
+    background-image: 
+      radial-gradient(at 0% 0%, var(--mesh-1) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, var(--mesh-2) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, var(--mesh-3) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, hsla(200, 100%, 90%, 0.5) 0px, transparent 50%);
+    background-attachment: fixed;
+    background-size: cover;
+  }
 
 /* Styles for Landing Page (moved from inline styles in index.js) */
 

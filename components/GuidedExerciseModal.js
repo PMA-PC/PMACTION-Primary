@@ -95,11 +95,22 @@ export const GuidedExerciseModal = ({ onClose, exerciseTitle }) => {
                 </div>
 
                 <div className="flex justify-center items-center gap-6">
-                    <button onClick={toggleAudio} className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${isPlaying ? 'bg-brand-primary text-white shadow-lg scale-110' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'}`} aria-label={isPlaying ? "Stop audio" : "Play calming audio"}>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            {isPlaying ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15.172a4 4 0 010-5.656M8.414 12.343a1 1 0 010-1.414m5.657 5.657a4 4 0 000-5.657M12.728 9.515a1 1 0 000 1.414M15.556 6.686a4 4 0 000 5.657" /> : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.858 15.858a5 5 0 010-7.072m2.828 9.9a9 9 0 010-12.728" />}
-                        </svg>
-                    </button>
+                    <div className="flex flex-col items-center gap-3">
+                        <button onClick={toggleAudio} className={`flex items-center gap-3 px-6 py-3 rounded-full transition-all shadow-md ${isPlaying ? 'bg-indigo-600 text-white scale-105 shadow-indigo-200' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`} aria-label={isPlaying ? "Stop audio" : "Play calming audio"}>
+                            {isPlaying ? (
+                                <>
+                                    <span className="animate-pulse">🔊</span>
+                                    <span className="font-bold">Playing 8D Audio</span>
+                                </>
+                            ) : (
+                                <>
+                                    <span>🎧</span>
+                                    <span className="font-bold">Enable 8D Audio</span>
+                                </>
+                            )}
+                        </button>
+                        {!isPlaying && <span className="text-xs text-brand-primary font-medium opacity-70">Headphones recommended for 8D effect</span>}
+                    </div>
                     <button onClick={onClose} className="bg-gray-800 text-white px-8 py-3 rounded-full font-bold hover:bg-gray-900 transition-colors shadow-lg">
                         End Exercise
                     </button>

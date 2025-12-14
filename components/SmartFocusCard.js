@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { motion } from 'framer-motion';
 
 export default function SmartFocusCard({ dailyStatus, onAction }) {
     const router = useRouter();
@@ -65,25 +66,34 @@ export default function SmartFocusCard({ dailyStatus, onAction }) {
     const activeContent = content[currentFocus] || content.morning;
 
     return (
-        <div className={`bg-gradient-to-r ${activeContent.color} rounded-2xl shadow-lg text-white p-6 transform hover:scale-[1.02] transition-all`}>
-            <div className="flex justify-between items-start mb-4">
-                <div>
-                    <h2 className="text-xl font-bold mb-1 flex items-center gap-2">
-                        {activeContent.icon} {activeContent.title}
-                    </h2>
-                    <p className="text-white/90 text-sm">{activeContent.subtitle}</p>
+        <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            whileHover={{ scale: 1.03 }}
+            className={`relative overflow-hidden rounded-2xl shadow-2xl text-white p-6 border border-white/20 bg-gradient-to-br ${activeContent.color}`}
+        >
+            <div className="absolute inset-0 bg-white/10 backdrop-blur-[2px] z-0"></div>
+            <div className="relative z-10">
+                <div className="flex justify-between items-start mb-6">
+                    <div>
+                        <h2 className="text-2xl font-bold mb-1 flex items-center gap-2 drop-shadow-md">
+                            {activeContent.icon} {activeContent.title}
+                        </h2>
+                        <p className="text-white/90 text-sm font-medium">{activeContent.subtitle}</p>
+                    </div>
+                    <span className="bg-white/20 px-3 py-1 rounded-full text-xs font-bold backdrop-blur-md border border-white/30 shadow-sm">
+                        {currentFocus === 'complete' ? '✨ DONE' : '🎯 FOCUS'}
+                    </span>
                 </div>
-                <span className="bg-white/20 px-3 py-1 rounded-lg text-xs font-bold backdrop-blur-sm">
-                    {currentFocus === 'complete' ? 'DONE' : 'FOCUS'}
-                </span>
-            </div>
 
-            <button
-                onClick={activeContent.action}
-                className="w-full py-3 bg-white text-gray-900 font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm flex items-center justify-center gap-2"
-            >
-                {activeContent.actionLabel} ➜
-            </button>
-        </div>
+                <button
+                    onClick={activeContent.action}
+                    className="w-full py-4 bg-white/90 text-gray-900 font-bold rounded-xl hover:bg-white transition-all shadow-lg flex items-center justify-center gap-2 group"
+                >
+                    {activeContent.actionLabel}
+                    <span className="group-hover:translate-x-1 transition-transform">➜</span>
+                </button>
+            </div>
+        </motion.div>
     );
 }

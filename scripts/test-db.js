@@ -29,14 +29,17 @@ try {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     async function testSignup() {
-        console.log('Attempting signup for testuser99@example.com...');
+        const uniqueEmail = `testuser_${Date.now()}@example.com`;
+        console.log(`Attempting signup for ${uniqueEmail}...`);
+
         const { data, error } = await supabase.auth.signUp({
-            email: 'testuser99@example.com',
+            email: uniqueEmail,
             password: 'password123'
         });
 
         if (error) {
             console.error('❌ Signup Failed:', error.message);
+            // Don't exit process here, just log error
         } else {
             console.log('✅ Signup Successful!');
             console.log('User ID:', data.user?.id);

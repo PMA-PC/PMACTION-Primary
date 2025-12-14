@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useApp } from '../lib/context';
 import { CHALLENGES } from '../lib/challengesData';
 import ChallengeDetailModal from '../components/ChallengeDetailModal';
+import { motion } from 'framer-motion';
 
 export default function ChallengeLibrary() {
     const router = useRouter();
@@ -181,9 +182,12 @@ export default function ChallengeLibrary() {
                                     <p className="text-center text-gray-400 py-8 text-sm">No challenges match filters.</p>
                                 ) : (
                                     group.challenges.filter(filterChallenge).map(challenge => (
-                                        <div
+                                        <motion.div
                                             key={challenge.id}
-                                            className="group border border-gray-200 rounded-xl p-5 hover:shadow-xl hover:border-blue-300 transition-all cursor-pointer bg-white relative overflow-hidden shadow-sm"
+                                            whileHover={{ scale: 1.02, y: -4 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                                            className="group border border-gray-200 rounded-xl p-5 hover:shadow-xl hover:border-blue-300 cursor-pointer bg-white relative overflow-hidden shadow-sm"
                                             onClick={() => setSelectedChallenge(challenge)}
                                         >
                                             {/* ADHD Badge - Conditional */}
@@ -223,7 +227,7 @@ export default function ChallengeLibrary() {
                                                     View Details
                                                 </span>
                                             </div>
-                                        </div>
+                                        </motion.div>
                                     )))}
                             </div>
                         </div>

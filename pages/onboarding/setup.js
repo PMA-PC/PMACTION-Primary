@@ -60,13 +60,35 @@ const SetupPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-teal-50 to-purple-50 flex flex-col items-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-50 to-teal-100 flex flex-col items-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
             <Head>
                 <title>Setup & Gamification | PMAction</title>
                 <meta name="description" content="Configure your notifications and learn about gamification" />
             </Head>
 
-            <div className="w-full max-w-7xl space-y-8">
+            {/* Animated Background Blobs */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <motion.div
+                    className="absolute w-96 h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-30"
+                    animate={{ x: [0, 100, 0], y: [0, -100, 0] }}
+                    transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+                    style={{ top: '10%', left: '10%' }}
+                />
+                <motion.div
+                    className="absolute w-96 h-96 bg-teal-300 rounded-full mix-blend-multiply filter blur-xl opacity-30"
+                    animate={{ x: [0, -100, 0], y: [0, 100, 0] }}
+                    transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+                    style={{ top: '60%', right: '10%' }}
+                />
+                <motion.div
+                    className="absolute w-96 h-96 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-30"
+                    animate={{ x: [0, 50, 0], y: [0, -50, 0] }}
+                    transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+                    style={{ bottom: '10%', left: '50%' }}
+                />
+            </div>
+
+            <div className="w-full max-w-7xl space-y-8 relative z-10">
                 {/* Progress Steps */}
                 <div className="flex justify-center space-x-4 mb-8">
                     {[1, 2, 3, 4].map((step) => (

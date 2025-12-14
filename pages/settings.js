@@ -57,7 +57,13 @@ export default function SettingsPage() {
                         </div>
                     </div>
                     <div className="p-6">
-                        <button className="text-red-600 font-bold text-sm hover:underline">
+                        <button
+                            onClick={() => router.push('/profile/details')}
+                            className="w-full mb-4 py-3 bg-blue-50 text-blue-600 font-bold rounded-xl hover:bg-blue-100 transition-colors"
+                        >
+                            Complete Detailed Profile
+                        </button>
+                        <button className="text-red-600 font-bold text-sm hover:underline block mx-auto">
                             Sign Out
                         </button>
                     </div>

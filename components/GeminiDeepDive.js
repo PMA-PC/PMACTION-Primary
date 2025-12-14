@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { getGeminiDeepDive } from '../lib/services/geminiService';
 
-const GeminiDeepDive = ({ currentDayContent }) => {
+const GeminiDeepDive = ({ currentDayContent, darkMode = false }) => {
     const [query, setQuery] = useState('');
     const [response, setResponse] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -55,7 +55,6 @@ const GeminiDeepDive = ({ currentDayContent }) => {
         setResponse('');
 
         // Construct context from currentDayContent
-        // Handling both the new structure (sections) and potentially simpler structures
         let contextText = "";
         if (currentDayContent) {
             contextText += `Title: ${currentDayContent.title || 'Topic'}\n`;
@@ -85,10 +84,38 @@ const GeminiDeepDive = ({ currentDayContent }) => {
         }
     }, [query, currentDayContent, apiKeySelected]);
 
+    const containerClasses = darkMode
+        ? "mt-10 p-6 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-sm"
+        : "mt-10 p-6 bg-blue-50 border-t-4 border-blue-300 rounded-lg shadow-md";
+
+    const titleClasses = darkMode
+        ? "text-2xl md:text-3xl font-bold text-white mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-400"
+        : "text-2xl md:text-3xl font-bold text-blue-800 mb-4";
+
+    const textClasses = darkMode ? "text-gray-300" : "text-gray-700";
+
+    const textAreaClasses = darkMode
+        ? "w-full p-4 h-32 bg-gray-900/50 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-200 resize-y disabled:bg-gray-800"
+        : "w-full p-4 h-32 bg-white border border-blue-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 resize-y disabled:bg-gray-100";
+
+    const buttonClasses = darkMode
+        ? `mt-4 px-6 py-3 rounded-xl font-bold text-white transition-all shadow-lg hover:shadow-indigo-500/20
+            ${isLoading || !apiKeySelected
+            ? 'bg-gray-800 cursor-not-allowed text-gray-500'
+            : 'bg-indigo-600 hover:bg-indigo-500'}`
+        : `mt-4 px-6 py-3 rounded-md font-semibold text-white transition duration-300 ease-in-out shadow-md
+            ${isLoading || !apiKeySelected
+            ? 'bg-gray-400 cursor-not-allowed'
+            : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400'}`;
+
+    const responseBoxClasses = darkMode
+        ? "mt-6 p-6 bg-gray-900/50 border border-indigo-500/30 rounded-2xl shadow-inner"
+        : "mt-6 p-4 bg-white border border-blue-200 rounded-md shadow-inner";
+
     return (
-        <div className="mt-10 p-6 bg-blue-50 border-t-4 border-blue-300 rounded-lg shadow-md">
-            <h3 className="text-2xl md:text-3xl font-bold text-blue-800 mb-4">Deep Dive with Gemini</h3>
-            <p className="text-gray-700 mb-4 leading-relaxed">
+        <div className={containerClasses}>
+            <h3 className={titleClasses}>Deep Dive with Gemini</h3>
+            <p className={`${textClasses} mb-4 leading-relaxed`}>
                 Curious to explore a concept further? Ask Gemini for a deeper explanation related to today's topic.
             </p>
 
@@ -107,7 +134,7 @@ const GeminiDeepDive = ({ currentDayContent }) => {
             )}
 
             <textarea
-                className="w-full p-4 h-32 bg-white border border-blue-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 resize-y disabled:bg-gray-100"
+                className={textAreaClasses}
                 placeholder="e.g., 'How does this strength apply to leadership?'"
                 value={query}
                 onChange={handleQueryChange}
@@ -116,11 +143,7 @@ const GeminiDeepDive = ({ currentDayContent }) => {
 
             <button
                 onClick={handleSubmitQuery}
-                className={`mt-4 px-6 py-3 rounded-md font-semibold text-white transition duration-300 ease-in-out shadow-md
-                    ${isLoading || !apiKeySelected
-                        ? 'bg-gray-400 cursor-not-allowed'
-                        : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400'
-                    }`}
+                className={buttonClasses}
                 disabled={isLoading || !apiKeySelected}
             >
                 {isLoading ? 'Thinking...' : 'Deep Dive with Gemini'}
@@ -133,9 +156,9 @@ const GeminiDeepDive = ({ currentDayContent }) => {
             )}
 
             {response && (
-                <div className="mt-6 p-4 bg-white border border-blue-200 rounded-md shadow-inner">
-                    <h4 className="text-xl font-semibold text-blue-800 mb-2">Gemini's Insight:</h4>
-                    <p className="text-gray-800 whitespace-pre-wrap leading-relaxed">{response}</p>
+                <div className={responseBoxClasses}>
+                    <h4 className={`text-xl font-semibold ${darkMode ? 'text-indigo-300' : 'text-blue-800'} mb-2`}>Gemini's Insight:</h4>
+                    <p className={`${darkMode ? 'text-gray-200' : 'text-gray-800'} whitespace-pre-wrap leading-relaxed`}>{response}</p>
                 </div>
             )}
         </div>

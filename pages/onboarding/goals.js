@@ -95,13 +95,35 @@ const GoalsPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-teal-50 flex flex-col items-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-50 to-teal-100 flex flex-col items-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
             <Head>
                 <title>What Brings You Here? | PMAction</title>
                 <meta name="description" content="Select your goals for mental wellness" />
             </Head>
 
-            <div className="w-full max-w-6xl space-y-8">
+            {/* Animated Background Blobs */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <motion.div
+                    className="absolute w-96 h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-30"
+                    animate={{ x: [0, 100, 0], y: [0, -100, 0] }}
+                    transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+                    style={{ top: '10%', left: '10%' }}
+                />
+                <motion.div
+                    className="absolute w-96 h-96 bg-teal-300 rounded-full mix-blend-multiply filter blur-xl opacity-30"
+                    animate={{ x: [0, -100, 0], y: [0, 100, 0] }}
+                    transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+                    style={{ top: '60%', right: '10%' }}
+                />
+                <motion.div
+                    className="absolute w-96 h-96 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-30"
+                    animate={{ x: [0, 50, 0], y: [0, -50, 0] }}
+                    transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+                    style={{ bottom: '10%', left: '50%' }}
+                />
+            </div>
+
+            <div className="w-full max-w-6xl space-y-8 relative z-10">
                 {/* Progress Steps */}
                 <div className="flex justify-center space-x-4 mb-8">
                     {[1, 2, 3, 4].map((step) => (
@@ -146,7 +168,7 @@ const GoalsPage = () => {
 
                 {/* Goals Grid */}
                 <motion.div
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 w-full"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.3 }}
@@ -157,61 +179,52 @@ const GoalsPage = () => {
                             <motion.button
                                 key={goal.id}
                                 onClick={() => toggleGoal(goal.id)}
-                                className={`relative p-4 rounded-2xl border-2 transition-all duration-300 text-left ${isSelected
-                                    ? 'bg-gradient-to-br from-teal-50 to-teal-100 border-teal-500 shadow-lg scale-105'
-                                    : 'bg-white border-gray-200 hover:border-teal-300 hover:shadow-md'
+                                className={`relative p-6 rounded-2xl border-2 text-left h-full flex flex-col transition-all duration-300 ${isSelected
+                                    ? 'bg-gradient-to-br from-teal-50 to-white border-teal-500 shadow-xl shadow-teal-100/50 transform scale-[1.02]'
+                                    : 'bg-white border-gray-100 hover:border-teal-200 hover:shadow-lg hover:-translate-y-1'
                                     }`}
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.3, delay: index * 0.05 }}
-                                whileHover={{ y: -4 }}
                                 whileTap={{ scale: 0.98 }}
                             >
                                 {/* Selection Indicator */}
-                                {isSelected && (
-                                    <motion.div
-                                        className="absolute top-4 right-4 w-6 h-6 bg-teal-600 rounded-full flex items-center justify-center"
-                                        initial={{ scale: 0 }}
-                                        animate={{ scale: 1 }}
-                                        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                                    >
-                                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    </motion.div>
-                                )}
+                                <div className={`absolute top-4 right-4 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300 ${isSelected ? 'bg-teal-500 scale-100' : 'bg-gray-100 scale-0'}`}>
+                                    <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
 
-                                <div className="text-5xl mb-3">{goal.icon}</div>
-                                <h3 className="text-lg font-bold text-gray-900 mb-2">{goal.title}</h3>
-                                <p className="text-sm text-gray-600">{goal.description}</p>
+                                <div className="text-4xl mb-4 p-3 bg-gray-50 rounded-xl w-fit">{goal.icon}</div>
+                                <h3 className={`text-lg font-bold mb-2 transition-colors ${isSelected ? 'text-teal-800' : 'text-gray-900'}`}>{goal.title}</h3>
+                                <p className="text-sm text-gray-500 font-medium leading-relaxed">{goal.description}</p>
                             </motion.button>
                         );
                     })}
                 </motion.div>
 
-                {/* Continue Button */}
-                <div className="flex flex-col items-center space-y-4">
-                    {selectedGoals.length === 0 && (
-                        <p className="text-sm text-gray-500 italic">Please select at least one goal to continue</p>
-                    )}
+                {/* Navigation Buttons - Sticky Footer */}
+                <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-gray-200 flex items-center justify-between z-50">
+                    <button
+                        onClick={() => router.back()}
+                        className="text-gray-500 font-bold hover:text-gray-700 px-4"
+                    >
+                        Back
+                    </button>
                     <motion.button
                         onClick={handleContinue}
                         disabled={selectedGoals.length === 0}
-                        className={`px-12 py-4 rounded-xl text-lg font-bold transition-all duration-300 ${selectedGoals.length > 0
-                            ? 'bg-gradient-to-r from-teal-600 to-teal-700 text-white shadow-xl hover:shadow-2xl hover:scale-105'
-                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        className={`px-8 py-3 rounded-xl font-bold shadow-lg transition-all duration-300 ${selectedGoals.length > 0
+                            ? 'bg-gradient-to-r from-teal-600 to-teal-500 text-white hover:shadow-teal-200/50 hover:shadow-xl hover:translate-y-[-2px]'
+                            : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                             }`}
-                        whileHover={selectedGoals.length > 0 ? { scale: 1.05 } : {}}
                         whileTap={selectedGoals.length > 0 ? { scale: 0.98 } : {}}
                     >
-                        Continue
-                        {selectedGoals.length > 0 && (
-                            <span className="ml-2 text-sm opacity-80">
-                                ({selectedGoals.length} selected)
-                            </span>
-                        )}
+                        {selectedGoals.length > 0 ? `Continue (${selectedGoals.length})` : 'Select a Goal'}
                     </motion.button>
                 </div>
+                {/* Spacer for sticky footer */}
+                <div className="h-24"></div>
             </div>
         </div>
     );

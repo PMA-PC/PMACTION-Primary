@@ -94,7 +94,8 @@ export default function AddWinModal({ isOpen, onClose, initialTab = WIN_TYPES.AC
                     setIsSubmitting(false);
                     return;
                 }
-                for (const activity of selectedActivities) {
+                // We'll process these in the background to be 'instant' for the user
+                const promises = selectedActivities.map(activity => {
                     const winData = {
                         type: WIN_TYPES.ACTIVITY,
                         timestamp: new Date().toISOString(),
@@ -104,8 +105,9 @@ export default function AddWinModal({ isOpen, onClose, initialTab = WIN_TYPES.AC
                         xp: activity.xp,
                         benefit: activity.benefit
                     };
-                    await addWin(winData);
-                }
+                    return addWin(winData);
+                });
+                await Promise.all(promises);
             } else {
                 let winData = {
                     type: activeTab === WIN_TYPES.MOOD ? 'journal' : activeTab,
@@ -141,11 +143,11 @@ export default function AddWinModal({ isOpen, onClose, initialTab = WIN_TYPES.AC
                 }
                 await addWin(winData);
             }
-            setShowSuccess(true);
+            // Close immediately/seamlessly
+            handleDone();
         } catch (error) {
             console.error("Failed to add win:", error);
-        } finally {
-            setIsSubmitting(false);
+            setIsSubmitting(false); // Only keep open if there's a real error to retry
         }
     };
 
@@ -480,7 +482,7 @@ export default function AddWinModal({ isOpen, onClose, initialTab = WIN_TYPES.AC
                         disabled={isSubmitting}
                         className="w-full py-4 bg-blue-600 text-white rounded-xl font-bold shadow-lg hover:bg-blue-700 hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {isSubmitting ? 'Saving...' : 'Claim Win!'}
+                        {isSubmitting ? 'Saving...' : 'Submit Entry'}
                     </button>
                 </div>
             </div>

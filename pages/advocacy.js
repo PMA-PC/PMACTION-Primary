@@ -8,8 +8,15 @@ import { BLOG_POSTS } from '../lib/blogData';
 
 // --- Components (Internal for now, matching user structure) ---
 
+// Add imports
+import { fetchPlaylistItems } from '../lib/services/youtubeService';
+import { generateBlogFromVideoData } from '../lib/services/geminiService'; // Ensure this function is exported from geminiService
+import { supabase } from '../lib/supabaseClient';
+
 const BlogGenerator = ({ addBlogPost }) => {
+    const [mode, setMode] = useState('theme'); // 'theme' or 'youtube'
     const [theme, setTheme] = useState(BLOG_THEMES[0].value);
+    const [playlistId, setPlaylistId] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const { user } = useApp();
@@ -18,31 +25,68 @@ const BlogGenerator = ({ addBlogPost }) => {
         setIsLoading(true);
         setError('');
         try {
-            // Note: generateBlogPost returns markdown string
-            const contentMarkdown = await generateBlogPost(theme);
+            if (mode === 'youtube') {
+                // 1. Get Session for Token
+                const { data: { session } } = await supabase.auth.getSession();
+                const providerToken = session?.provider_token;
 
-            // Simple parsing to create a post object from the generated text
-            const lines = contentMarkdown.split('\n');
-            let title = 'Generated Insight';
-            let content = contentMarkdown;
+                if (!providerToken) {
+                    // MVP Fallback
+                    throw new Error("YouTube Connection required. Please Sign Out and Sign In with Google (ensure 'YouTube' scope is checked).");
+                }
 
-            // Try to extract title if it starts with #
-            if (lines.length > 0 && lines[0].trim().startsWith('# ')) {
-                title = lines[0].replace('# ', '').trim();
-                content = lines.slice(1).join('\n').trim();
+                // 2. Fetch Playlist
+                if (!playlistId) throw new Error("Please enter a Playlist ID.");
+                const cleanId = playlistId.replace('https://www.youtube.com/playlist?list=', '').replace('PL', 'PL').split('&')[0];
+
+                const videos = await fetchPlaylistItems(cleanId, providerToken);
+                if (videos.length === 0) throw new Error("No videos found in this playlist.");
+
+                // 3. Generate Blogs (Returns JSON object with 'posts' array)
+                const responseData = await generateBlogFromVideoData(videos);
+
+                if (responseData && responseData.posts && Array.isArray(responseData.posts)) {
+                    responseData.posts.forEach(post => {
+                        const newPost = {
+                            id: `gen-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                            title: post.title.replace(/^\*\*/, '').replace(/\*\*$/, '').replace(/^# /, ''),
+                            author: 'AI Advocate',
+                            date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                            content: post.content,
+                            tags: Array.isArray(post.tags) ? post.tags : ['YouTube Insight'],
+                            readTime: '4 min'
+                        };
+                        addBlogPost(newPost);
+                    });
+                } else {
+                    throw new Error("Failed to generate valid blog posts from AI.");
+                }
+
+            } else {
+                // Theme Mode
+                const contentMarkdown = await generateBlogPost(theme);
+
+                // Simple parsing
+                const lines = contentMarkdown.split('\n');
+                let title = 'Generated Insight';
+                let content = contentMarkdown;
+
+                if (lines.length > 0 && lines[0].trim().startsWith('# ')) {
+                    title = lines[0].replace('# ', '').trim();
+                    content = lines.slice(1).join('\n').trim();
+                }
+
+                const newPost = {
+                    id: `gen-${Date.now()}`,
+                    title: title.replace(/^\*\*/, '').replace(/\*\*$/, ''),
+                    author: 'AI Advocate',
+                    date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                    content: content,
+                    tags: [theme, 'Community'],
+                    readTime: '3 min'
+                };
+                addBlogPost(newPost);
             }
-
-            const newPost = {
-                id: `gen-${Date.now()}`,
-                title: title.replace(/^\*\*/, '').replace(/\*\*$/, ''), // Remove bolding if present
-                author: 'AI Advocate',
-                date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-                content: content,
-                tags: [theme, 'Community'],
-                readTime: '3 min'
-            };
-
-            addBlogPost(newPost);
         } catch (err) {
             console.error(err);
             setError(err instanceof Error ? err.message : 'An unknown error occurred');
@@ -60,26 +104,65 @@ const BlogGenerator = ({ addBlogPost }) => {
     }
 
     return (
-        <div className="bg-brand-dark p-6 rounded-lg shadow-lg mb-8 text-white">
-            <h2 className="text-2xl font-bold mb-4">AI Content Generator</h2>
-            <p className="mb-4 text-gray-300">Create a new blog post using AI. Choose a theme and let our assistant write for you.</p>
-            <div className="flex flex-col sm:flex-row gap-4">
-                <select
-                    value={theme}
-                    onChange={(e) => setTheme(e.target.value)}
-                    className="flex-grow p-3 bg-gray-800 border border-gray-600 text-white rounded-md focus:ring-2 focus:ring-brand-primary outline-none"
+        <div className="bg-brand-dark p-6 rounded-lg shadow-lg mb-8 text-white border border-gray-700">
+            <h2 className="text-2xl font-bold mb-2">AI Content Generator</h2>
+            <p className="mb-6 text-gray-400 text-sm">Create a new blog post using AI. Choose a theme or import from your YouTube research.</p>
+
+            {/* Mode Switcher */}
+            <div className="flex space-x-4 mb-6 border-b border-gray-700 pb-2">
+                <button
+                    onClick={() => setMode('theme')}
+                    className={`pb-2 px-1 text-sm font-medium transition-colors ${mode === 'theme' ? 'text-brand-secondary border-b-2 border-brand-secondary' : 'text-gray-400 hover:text-white'}`}
                 >
-                    {BLOG_THEMES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
-                </select>
+                    ✨ By Theme
+                </button>
+                <button
+                    onClick={() => setMode('youtube')}
+                    className={`pb-2 px-1 text-sm font-medium transition-colors ${mode === 'youtube' ? 'text-brand-secondary border-b-2 border-brand-secondary' : 'text-gray-400 hover:text-white'}`}
+                >
+                    📺 From YouTube Playlist
+                </button>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 items-end">
+                {mode === 'theme' ? (
+                    <div className="flex-grow w-full">
+                        <label className="block text-xs text-gray-400 mb-1 uppercase tracking-wide">Select Theme</label>
+                        <select
+                            value={theme}
+                            onChange={(e) => setTheme(e.target.value)}
+                            className="w-full p-3 bg-gray-800 border border-gray-600 text-white rounded-xl focus:ring-2 focus:ring-brand-primary outline-none transition-all"
+                        >
+                            {BLOG_THEMES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+                        </select>
+                    </div>
+                ) : (
+                    <div className="flex-grow w-full">
+                        <label className="block text-xs text-gray-400 mb-1 uppercase tracking-wide">YouTube Playlist ID (or URL)</label>
+                        <input
+                            type="text"
+                            value={playlistId}
+                            onChange={(e) => setPlaylistId(e.target.value)}
+                            placeholder="e.g. PLx0..."
+                            className="w-full p-3 bg-gray-800 border border-gray-600 text-white rounded-xl focus:ring-2 focus:ring-brand-primary outline-none transition-all"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">Requires 'YouTube' scope on login. Use a 'Watch Later' or custom playlist.</p>
+                    </div>
+                )}
+
                 <button
                     onClick={handleGenerate}
                     disabled={isLoading}
-                    className="bg-brand-secondary text-brand-black px-6 py-3 rounded-md font-semibold hover:bg-brand-secondary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center min-w-[140px]"
+                    className="w-full sm:w-auto bg-brand-secondary text-brand-black px-8 py-3 rounded-xl font-bold hover:bg-brand-secondary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center shadow-lg shadow-brand-secondary/20 h-[50px]"
                 >
-                    {isLoading ? <Spinner size="h-6 w-6" /> : 'Generate Post'}
+                    {isLoading ? <Spinner size="h-5 w-5" /> : (mode === 'theme' ? 'Generate Post' : 'Import & Write')}
                 </button>
             </div>
-            {error && <p className="text-red-500 mt-4">{error}</p>}
+            {error && (
+                <div className="mt-4 p-3 bg-red-900/30 border border-red-800 rounded-lg text-red-400 text-sm flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
+                    <span>⚠️</span> {error}
+                </div>
+            )}
         </div>
     );
 };
@@ -220,6 +303,21 @@ export default function AdvocacyPage() {
                 <title>Advocacy & News | PMAction</title>
                 <meta name="description" content="Join the movement. Advocacy, news, and stories of hope." />
             </Head>
+
+            {/* Navigation Header */}
+            <nav className="bg-gray-800 border-b border-gray-700 sticky top-0 z-50">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex items-center justify-between h-16">
+                        <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.location.href = '/'}>
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-400 to-teal-600 flex items-center justify-center text-white font-black text-xl shadow-lg">P</div>
+                            <span className="text-white font-bold text-lg">PMAction</span>
+                        </div>
+                        <a href="/dashboard" className="text-gray-300 hover:text-white font-medium flex items-center gap-2 transition-colors">
+                            <span>←</span> Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </nav>
 
             <main className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-12">
