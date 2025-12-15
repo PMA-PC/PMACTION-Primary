@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router'; // Added import
 import { motion } from 'framer-motion';
 import Head from 'next/head';
 import PMASlotMachine from '../components/PMASlotMachine';
 
 const Home = () => {
+  const router = useRouter(); // Fix: Added missing router
   const [showWinnerMessage, setShowWinnerMessage] = useState(false);
   const handleJackpotComplete = () => {
     setShowWinnerMessage(true);
@@ -40,7 +42,7 @@ const Home = () => {
                 Log In
               </Link>
               <Link
-                href="/onboarding/goals"
+                href="/onboarding"
                 className="px-5 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-full hover:bg-gray-800 hover:shadow-lg transition-all duration-200"
               >
                 Get Started
@@ -82,7 +84,7 @@ const Home = () => {
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                   <Link
-                    href="/onboarding/goals"
+                    href="/onboarding"
                     className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-lg font-bold rounded-full shadow-xl shadow-green-200 hover:shadow-2xl hover:scale-105 transition-all duration-300"
                   >
                     Start Your Free Journey

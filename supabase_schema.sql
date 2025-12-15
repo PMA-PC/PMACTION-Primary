@@ -372,6 +372,22 @@ CREATE TABLE assessment_questions (
 CREATE INDEX idx_assessment_questions_assessment ON assessment_questions(assessment_id, question_number);
 CREATE INDEX idx_assessment_questions_section ON assessment_questions(assessment_id, section);
 
+-- SEED DATA: Wellness Check
+INSERT INTO assessments (slug, name, description, category, total_questions, scoring_method, interpretation_ranges) VALUES
+('wellness-check', 'Quick Wellness Check', 'A brief check-in to understand your current mental well-being.', 'wellness', 8, 'sum', 
+'{"0-5": "Wellness", "6-10": "Mild Symptoms", "11-15": "Moderate Symptoms", "16+": "Severe Symptoms"}'::jsonb
+);
+
+INSERT INTO assessment_questions (assessment_id, question_number, question_text, response_options) VALUES
+((SELECT id FROM assessments WHERE slug = 'wellness-check'), 1, 'Little interest or pleasure in doing things', '[{"value": 0, "label": "Not at all"}, {"value": 1, "label": "Several days"}, {"value": 2, "label": "More than half"}, {"value": 3, "label": "Nearly every day"}]'::jsonb),
+((SELECT id FROM assessments WHERE slug = 'wellness-check'), 2, 'Feeling down, depressed, or hopeless', '[{"value": 0, "label": "Not at all"}, {"value": 1, "label": "Several days"}, {"value": 2, "label": "More than half"}, {"value": 3, "label": "Nearly every day"}]'::jsonb),
+((SELECT id FROM assessments WHERE slug = 'wellness-check'), 3, 'Trouble falling or staying asleep', '[{"value": 0, "label": "Not at all"}, {"value": 1, "label": "Several days"}, {"value": 2, "label": "More than half"}, {"value": 3, "label": "Nearly every day"}]'::jsonb),
+((SELECT id FROM assessments WHERE slug = 'wellness-check'), 4, 'Feeling tired or having little energy', '[{"value": 0, "label": "Not at all"}, {"value": 1, "label": "Several days"}, {"value": 2, "label": "More than half"}, {"value": 3, "label": "Nearly every day"}]'::jsonb),
+((SELECT id FROM assessments WHERE slug = 'wellness-check'), 5, 'Feeling nervous, anxious, or on edge', '[{"value": 0, "label": "Not at all"}, {"value": 1, "label": "Several days"}, {"value": 2, "label": "More than half"}, {"value": 3, "label": "Nearly every day"}]'::jsonb),
+((SELECT id FROM assessments WHERE slug = 'wellness-check'), 6, 'Not being able to stop or control worrying', '[{"value": 0, "label": "Not at all"}, {"value": 1, "label": "Several days"}, {"value": 2, "label": "More than half"}, {"value": 3, "label": "Nearly every day"}]'::jsonb),
+((SELECT id FROM assessments WHERE slug = 'wellness-check'), 7, 'Worrying too much about different things', '[{"value": 0, "label": "Not at all"}, {"value": 1, "label": "Several days"}, {"value": 2, "label": "More than half"}, {"value": 3, "label": "Nearly every day"}]'::jsonb),
+((SELECT id FROM assessments WHERE slug = 'wellness-check'), 8, 'Trouble relaxing', '[{"value": 0, "label": "Not at all"}, {"value": 1, "label": "Several days"}, {"value": 2, "label": "More than half"}, {"value": 3, "label": "Nearly every day"}]'::jsonb);
+
 -- User assessments
 CREATE TABLE user_assessments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -569,7 +585,15 @@ BEGIN
         v_new_total := 0;
         v_current_level := 1;
         v_points_to_next := 500;
-        INSERT INTO user_points (user_id, total_points, current_level, points_to_next_level)
+    -- ============================================================================
+-- SEED DATA: TRAINING PROGRAMS
+-- ============================================================================
+
+INSERT INTO challenges (slug, title, description, category, difficulty, duration_days, age_groups, total_tasks, icon) VALUES
+('mindfulness-journey', '7-Day Mindfulness Journey', 'Build present-moment awareness through daily meditation practices.', 'mindfulness', 'beginner', 7, ARRAY['adult'], 7, '🧘'),
+('communication-journey', 'Building Healthy Communication', 'Improve relationship skills and conflict resolution.', 'relationships', 'intermediate', 7, ARRAY['adult'], 7, '💬');
+
+    INSERT INTO user_points (user_id, total_points, current_level, points_to_next_level)
         VALUES (p_user_id, 0, 1, 500);
     END IF;
 

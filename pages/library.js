@@ -133,6 +133,32 @@ const LibraryPage = () => {
                     </div>
                 </section>
 
+                {/* Condition Encyclopedia (Standardized Cards) */}
+                <section>
+                    <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Condition Encyclopedia</h2>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {/* Static link for ADHD for now, others can be mapped if data exists */}
+                        <div onClick={() => router.push('/conditions/adhd')} className="bg-white p-6 rounded-2xl shadow-md border hover:border-blue-500 cursor-pointer transition-all hover:-translate-y-1 group">
+                            <div className="bg-orange-100 w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">⚡</div>
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">ADHD</h3>
+                            <p className="text-gray-500 text-sm line-clamp-2">Attention-Deficit/Hyperactivity Disorder. Focus, impulse control, and activity levels.</p>
+                            <div className="mt-4 text-blue-600 font-bold text-sm">View Guide &rarr;</div>
+                        </div>
+
+                        {/* Placeholder for others to show UI structure */}
+                        <div className="bg-gray-50 p-6 rounded-2xl border border-dashed border-gray-300 flex flex-col items-center justify-center text-center opacity-70">
+                            <span className="text-2xl mb-2">🧠</span>
+                            <h3 className="font-bold text-gray-700">Anxiety</h3>
+                            <span className="text-xs text-gray-400 mt-1">Coming Soon</span>
+                        </div>
+                        <div className="bg-gray-50 p-6 rounded-2xl border border-dashed border-gray-300 flex flex-col items-center justify-center text-center opacity-70">
+                            <span className="text-2xl mb-2">🌧️</span>
+                            <h3 className="font-bold text-gray-700">Depression</h3>
+                            <span className="text-xs text-gray-400 mt-1">Coming Soon</span>
+                        </div>
+                    </div>
+                </section>
+
                 {/* AI Topic Explorer Section */}
                 <section className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100">
                     <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center flex justify-center items-center gap-2">

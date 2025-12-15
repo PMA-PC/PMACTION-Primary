@@ -57,12 +57,15 @@ module.exports = {
           foreground: "hsl(var(--card-foreground))",
         },
         brand: {
-          dark: "#111827", // gray-900
-          primary: "#3b82f6", // blue-500
-          "primary-hover": "#2563eb", // blue-600
-          secondary: "#fbbf24", // amber-400
-          "secondary-hover": "#f59e0b", // amber-500
-          black: "#000000"
+          dark: "#0f172a", // slate-900 (Deep background)
+          primary: "#0d9488", // teal-600 (Main brand)
+          "primary-hover": "#0f766e", // teal-700
+          secondary: "#a3e635", // sage-400 (Success/Growth)
+          "secondary-hover": "#84cc16", // sage-500
+          accent: "#fb7185", // coral-400 (Highlights)
+          black: "#1f2937", // charcoal-900
+          surface: "#ffffff",
+          "surface-muted": "#f0fdfa", // teal-50
         },
       },
       borderRadius: {

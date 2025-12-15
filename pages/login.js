@@ -65,7 +65,11 @@ const LoginPage = () => {
         setError('Please check your email for confirmation.');
       }
     } catch (err) {
-      setError(err.message);
+      if (err.message === 'Invalid login credentials') {
+        setError('Invalid credentials. Have you confirmed your email?');
+      } else {
+        setError(err.message);
+      }
     } finally {
       setIsSubmitting(false);
     }

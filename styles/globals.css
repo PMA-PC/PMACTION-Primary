@@ -21,7 +21,7 @@ body {
   --secondary-color: #764ba2;
   --accent-color: #4CAF50;
   --warning-orange: #FF9800;
-  
+
   /* Spacing */
   --spacing-xs: 5px;
   --spacing-sm: 10px;
@@ -36,40 +36,54 @@ body {
   --radius-xl: 50px;
 
   /* Shadows */
-  --shadow-sm: 0 2px 5px rgba(0,0,0,0.1);    
-  --shadow-md: 0 10px 30px rgba(0,0,0,0.2);  
-  --shadow-lg: 0 20px 60px rgba(0,0,0,0.3);
+  --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
 /* 2026 Liquid Glass Design System */
-  :root {
-    --glass-bg: rgba(255, 255, 255, 0.7);
-    --glass-border: rgba(255, 255, 255, 0.5);
-    --glass-shadow: rgba(31, 38, 135, 0.1);
-    --mesh-1: hsla(250, 100%, 85%, 0.8);
-    --mesh-2: hsla(300, 100%, 90%, 0.8);
-    --mesh-3: hsla(180, 100%, 85%, 0.8);
-  }
+:root {
+  /* Brand Colors (duplicated from Tailwind for CSS variable usage) */
+  --teal-50: #f0fdfa;
+  --teal-100: #ccfbf1;
+  --teal-500: #14b8a6;
+  --teal-600: #0d9488;
+  --sage-400: #a3e635;
 
-  /* Utility Classes */
-  .glass-panel {
-    background: var(--glass-bg);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--glass-border);
-    box-shadow: 0 8px 32px 0 var(--glass-shadow);
-  }
+  /* Glassmorphism Tokens */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-shadow: rgba(13, 148, 136, 0.1);
+  /* Teal tinted shadow */
 
-  .mesh-gradient-bg {
-    background-color: #f3f4f6;
-    background-image: 
-      radial-gradient(at 0% 0%, var(--mesh-1) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, var(--mesh-2) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, var(--mesh-3) 0px, transparent 50%),
-      radial-gradient(at 0% 100%, hsla(200, 100%, 90%, 0.5) 0px, transparent 50%);
-    background-attachment: fixed;
-    background-size: cover;
-  }
+  /* Mesh Gradients */
+  --mesh-1: hsla(170, 100%, 85%, 0.8);
+  /* Teal-ish */
+  --mesh-2: hsla(80, 100%, 90%, 0.8);
+  /* Sage-ish */
+  --mesh-3: hsla(200, 100%, 85%, 0.8);
+  /* Light Blue */
+}
+
+/* Utility Classes */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 var(--glass-shadow);
+}
+
+.mesh-gradient-bg {
+  background-color: #f3f4f6;
+  background-image:
+    radial-gradient(at 0% 0%, var(--mesh-1) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, var(--mesh-2) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, var(--mesh-3) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, hsla(200, 100%, 90%, 0.5) 0px, transparent 50%);
+  background-attachment: fixed;
+  background-size: cover;
+}
 
 /* Styles for Landing Page (moved from inline styles in index.js) */
 
@@ -79,6 +93,7 @@ body {
   0% {
     transform: translateX(-100%);
   }
+
   100% {
     transform: translateX(100%);
   }
